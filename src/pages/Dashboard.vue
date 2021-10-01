@@ -1,10 +1,13 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-btn color="primary" @click="clickk()">Scan new ROCF</q-btn>
+  <q-page class="flex flex-center">  
+    
     <img v-if="imageSrc" :src="imageSrc">
-    <q-btn @click="takePicture()">Take picture</q-btn>
-    {{imageSrc}}
-    {{info}}
+
+    <div style="position:absolute; bottom:0">
+      <q-btn color="primary" @click="clickk()">Scan new ROCF</q-btn>
+      <q-btn @click="takePicture()">Take picture</q-btn>
+      {{info}}
+    </div>
   </q-page>
 </template>
 
@@ -15,7 +18,8 @@ export default {
   data() {
     return {
       imageSrc: null,
-      info:''
+      info:'', 
+      cameraOptionsBarHeight: 120
     }
   },
 
@@ -24,32 +28,12 @@ export default {
       
       console.log("lol");
       console.log(navigator)
-      // navigator.camera.getPicture(
-      //   data => { // on success
-      //     this.imageSrc = `data:image/jpeg;base64,${data}`
-      //   },
-      //   () => { // on fail
-      //     this.$q.notify('Could not access device camera.')
-      //   },
-      //   {
-      //     quality: 50,
-      //     destinationType: navigator.camera.DestinationType.DATA_URL,
-      //     encodingType: navigator.camera.EncodingType.JPEG,
-      //     MEDIATYPE: navigator.camera.MediaType.PICTURE,
-      //     sourceType: navigator.camera.PictureSourceType.CAMERA,
-      //     mediaType: navigator.camera.MediaType.PICTURE,
-      //     cameraDirection: navigator.camera.Direction.BACK,
-      //     targetWidth: 300,
-      //     targetHeight: 400
-      //   }
-      // )
 
-      CameraPreview.setPreviewSize({width: 0.5 * window.screen.width, height: 0.5 * window.screen.height});
-
+      // CameraPreview.setPreviewSize({width: 0.5 * window.screen.width, height: 0.5 * window.screen.height});
       let options = {
         x: 0,
-        y: 0,
-        width: 0.5 * window.screen.width ,
+        y: (0.5 * window.screen.height - this.cameraOptionsBarHeight),
+        width: window.screen.width ,
         height: 0.5 * window.screen.height,
         camera: CameraPreview.CAMERA_DIRECTION.BACK,
         toBack: false,
