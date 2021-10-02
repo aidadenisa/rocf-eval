@@ -11,7 +11,10 @@ const routes = [
     path: '/evaluate',
     component: () => import('layouts/EvaluationLayout.vue'),
     children: [
-      { path: 'camera', component: () => import('src/pages/Camera.vue') }
+      { path: 'patient', component: () => import('src/pages/PatientCode.vue') },
+      { path: 'camera', component: () => import('src/pages/Camera.vue') },
+      { path: 'set-points', component: () => import('src/pages/SetPoints.vue') }
+
     ]
   },
 
