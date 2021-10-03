@@ -1,14 +1,21 @@
 <template>
   <q-page >
     Please set the points on the image as in the example below: 
-    <!-- {{imageSrc}} -->
-    <!-- {{info}} -->
+
     <div ref="editor" class="image-editor">
       <img ref="image" v-if="imageSrc" :src="imageSrc" >
     </div>
+
     <q-btn @click="saveImage">Use Image </q-btn>
 
+    {{info}}
+
     <img v-if="preview" :src="preview" >
+
+    <div class="loader" v-if="loading">
+      <p>loading...</p>
+    </div>
+    
 
   </q-page>
 </template>
@@ -27,36 +34,35 @@ export default {
       imageSrc: '',
       paperRatio: 148.5 / 210,
       cropper: {},
-      preview: ''
+      preview: '', 
+      loading: true
     }
   },
   mounted() {
-    // this.crop(img).then((newImage)=> {
-    //   this.imageSrc = newImage;
-    // })
 
     this.imageSrc = this.$store.state.image;
 
     this.crop(this.imageSrc).then(image => {
       this.imageSrc  = image;
-      console.log(this.getImageDimensions(this.imageSrc));
+      this.getImageDimensions(this.imageSrc);
 
       this.setupCropper();
       console.log("setupCropper")
 
-    })
+    });
 
   },
 
   methods: {
     saveImage() {
       this.preview = this.cropper.getCroppedCanvas().toDataURL();
+      this.getImageDimensions(this.preview)
     },
     setupCropper() {
       const imageRef = this.$refs.image;
       this.cropper = new Cropper(imageRef, {
         //cropper options
-        autoCrop: false,
+        autoCrop: true,
         zoomable: true,
         scalable: false,
         viewMode: 3,
@@ -65,7 +71,11 @@ export default {
         highlight: false,
         guides: false,
         minCropBoxWidth: window.screen.width,
-        minCropBoxHeight: parseInt(window.screen.width * this.paperRatio)
+        minCropBoxHeight: parseInt(window.screen.width * this.paperRatio),
+        ready: () => {
+          this.loading = false;
+          console.log("loading " + this.loading);
+        }
       });
     
     },
@@ -85,15 +95,6 @@ export default {
 
           // get half of the height
           const outputHeight = inputHeight / 2;
-
-          // if it's bigger than our target aspect ratio
-          // let outputWidth = inputWidth;
-          // let outputHeight = inputHeight;
-          // if (inputImageAspectRatio > aspectRatio) {
-          //   outputWidth = inputHeight * aspectRatio;
-          // } else if (inputImageAspectRatio < aspectRatio) {
-          //   outputHeight = inputWidth / aspectRatio;
-          // }
 
           // calculate the position to draw the image at
           const outputX = 0.0;
@@ -119,8 +120,8 @@ export default {
     getImageDimensions(imageSrc) {
       var i = new Image(); 
 
-      i.onload = function(){
-        alert( i.width+", "+i.height );
+      i.onload = () => {
+        this.info = "second dimensions: "+ i.width+", "+i.height ;
       };
 
       i.src = imageSrc; 
@@ -135,6 +136,22 @@ export default {
 }
 
 .image-editor {
+  width: 100%;
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  width:100%
+}
+.loader p{ 
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 100px;
   width: 100%;
 }
 </style>
