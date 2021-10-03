@@ -3,26 +3,31 @@
     Please set the points on the image as in the example below: 
     <!-- {{imageSrc}} -->
     <!-- {{info}} -->
-    <img v-if="imageSrc" :src="imageSrc" >
-    <!-- <vue-cropper
-        ref="cropper"
-        :src="imageSrc"
-        alt="Source Image"
-        >
-    </vue-cropper> -->
+    <div ref="editor" class="image-editor">
+      <img ref="image" v-if="imageSrc" :src="imageSrc" >
+    </div>
+    <q-btn @click="saveImage">Use Image </q-btn>
+
+    <img v-if="preview" :src="preview" >
 
   </q-page>
 </template>
 
 <script>
-import { useStore } from 'vuex'
+
+import Cropper from 'cropperjs';
+import 'cropperjs/dist/cropper.css';
+
 export default {
   name: 'Camera',
   data() {
     return {
       info:'', 
       cameraOptionsBarHeight: 120,
-      imageSrc: ''
+      imageSrc: '',
+      paperRatio: 148.5 / 210,
+      cropper: {},
+      preview: ''
     }
   },
   mounted() {
@@ -35,10 +40,35 @@ export default {
     this.crop(this.imageSrc).then(image => {
       this.imageSrc  = image;
       console.log(this.getImageDimensions(this.imageSrc));
+
+      this.setupCropper();
+      console.log("setupCropper")
+
     })
+
   },
 
   methods: {
+    saveImage() {
+      this.preview = this.cropper.getCroppedCanvas().toDataURL();
+    },
+    setupCropper() {
+      const imageRef = this.$refs.image;
+      this.cropper = new Cropper(imageRef, {
+        //cropper options
+        autoCrop: false,
+        zoomable: true,
+        scalable: false,
+        viewMode: 3,
+        background: false,
+        modal: false,
+        highlight: false,
+        guides: false,
+        minCropBoxWidth: window.screen.width,
+        minCropBoxHeight: parseInt(window.screen.width * this.paperRatio)
+      });
+    
+    },
     async crop(image) {
       // we return a Promise that gets resolved with our canvas element
       return new Promise((resolve) => {
@@ -100,8 +130,11 @@ export default {
 </script>
 
 <style scoped>
-img {
-    width: 100%;
+.image-editor img {
+  width: 100%;
+}
 
+.image-editor {
+  width: 100%;
 }
 </style>
