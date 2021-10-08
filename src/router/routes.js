@@ -13,7 +13,8 @@ const routes = [
     children: [
       { path: 'patient', component: () => import('src/pages/PatientCode.vue') },
       { path: 'camera', component: () => import('src/pages/Camera.vue') },
-      { path: 'adjust-photo', component: () => import('src/pages/AdjustPhoto.vue') }
+      { path: 'adjust-photo', component: () => import('src/pages/AdjustPhoto.vue') },
+      { path: 'set-points', component: () => import('src/pages/SetPoints.vue') },
 
     ]
   },

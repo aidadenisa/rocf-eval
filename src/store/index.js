@@ -22,9 +22,13 @@ export default async function(/* { ssrContext } */) {
     
     actions: {
       fetchImage({ commit }, newImage) {
+        console.log("i received a new image")
         if (newImage) {
+          console.log("good, commit")
+
           commit("newImage", newImage);
         } else {
+          console.log("not good, delete")
           commit("newImage", '');
         }
       },

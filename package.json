@@ -13,6 +13,7 @@
     "@quasar/extras": "^1.0.0",
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.12",
+    "pinch-zoom-js": "^2.3.4",
     "quasar": "^2.0.0",
     "vuex": "^4.0.2"
   },

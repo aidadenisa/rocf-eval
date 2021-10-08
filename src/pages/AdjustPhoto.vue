@@ -8,10 +8,6 @@
 
     <q-btn @click="saveImage">Use Image </q-btn>
 
-    {{info}}
-
-    <img v-if="preview" :src="preview" >
-
     <div class="loader" v-if="loading">
       <p>loading...</p>
     </div>
@@ -56,7 +52,9 @@ export default {
   methods: {
     saveImage() {
       this.preview = this.cropper.getCroppedCanvas().toDataURL();
-      this.getImageDimensions(this.preview)
+      this.$store.dispatch("fetchImage", this.preview);
+      // this.getImageDimensions(this.preview);
+      this.$router.push("/evaluate/set-points");
     },
     setupCropper() {
       const imageRef = this.$refs.image;
