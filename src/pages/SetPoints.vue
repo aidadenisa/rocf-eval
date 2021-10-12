@@ -3,7 +3,6 @@
       
     Please set the 5 refference points:
     {{info}}
-
     <canvas id="overlay"></canvas>
   </q-page>
 </template>
@@ -37,10 +36,9 @@ export default {
 
     canvas.width = window.screen.width * window.devicePixelRatio;
     // canvas.height = parseInt(window.screen.width * this.paperRatio) * window.devicePixelRatio;
-    canvas.height = window.screen.height * window.devicePixelRatio;
+    canvas.height = 0.7 * window.screen.height * window.devicePixelRatio;
 
     console.log("canvas dim: ", canvas.width, canvas.height)
-    
     // ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentPointInOrigin = { x: - canvas.width / 4, y: 0 }
@@ -67,6 +65,8 @@ export default {
 
         console.log(scale)
 
+        let ratio = canvas.clientWidth / canvas.width;
+
     
         const moveHandler = (event) => {
             event.preventDefault();
@@ -74,16 +74,27 @@ export default {
             // event = event.originalEvent || event;
 
             //update current position
-            currentPointInOrigin.x =  currentPointInOrigin.x - (moveStartingPoint.layerX - event.layerX) / ( (1/scale) * 2 * window.devicePixelRatio);
-            currentPointInOrigin.y =  currentPointInOrigin.y - (moveStartingPoint.layerY - event.layerY) / ( (1/scale) * 4 * window.devicePixelRatio);
+            currentPointInOrigin.x =  currentPointInOrigin.x - (moveStartingPoint.layerX - event.layerX) ;
+            currentPointInOrigin.y =  currentPointInOrigin.y - (moveStartingPoint.layerY - event.layerY) ;
 
 
             //if current position if outside of bounds, set it to the bounds
             currentPointInOrigin.x = currentPointInOrigin.x > 0 ? 0 : currentPointInOrigin.x;
-            currentPointInOrigin.x = (- currentPointInOrigin.x) + canvas.clientWidth > canvas.width ? - (canvas.width - canvas.clientWidth) : currentPointInOrigin.x;
+            currentPointInOrigin.x = (- currentPointInOrigin.x) + canvas.width > base_image.width ? - (base_image.width - canvas.width) : currentPointInOrigin.x;
 
             currentPointInOrigin.y = currentPointInOrigin.y > 0 ? 0 : currentPointInOrigin.y;
-            // currentPointInOrigin.y = currentPointInOrigin.y + canvas.clientHeight > canvas.height ? (canvas.height - canvas.clientHeight) : currentPointInOrigin.y;
+            currentPointInOrigin.y = (- currentPointInOrigin.y) +  canvas.height > base_image.height  ?  - ( base_image.height - canvas.height) : currentPointInOrigin.y;
+            this.info = [(- currentPointInOrigin.x), (- currentPointInOrigin.y) ] ;
+
+            moveStartingPoint = {
+                layerX: event.layerX,
+                layerY: event.layerY,
+            };
+
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(base_image, currentPointInOrigin.x, currentPointInOrigin.y);
+    
             
         };
 
@@ -99,10 +110,8 @@ export default {
     });
 
     base_image.onload = () => {
-        setInterval(() => {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(base_image, currentPointInOrigin.x, currentPointInOrigin.y);
-        }, 50)
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(base_image, currentPointInOrigin.x, currentPointInOrigin.y, base_image.width, base_image.height);
     }
     
   },
