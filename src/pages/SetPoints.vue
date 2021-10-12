@@ -188,7 +188,7 @@ export default {
 
         this.dimensions = {
             width: this.baseImage.width * this.zoom,
-            height: this.currentImageHeight = this.baseImage.height * this.zoom
+            height: this.baseImage.height * this.zoom
         };
 
         this.distance = newDistance;
@@ -196,7 +196,7 @@ export default {
     setPoint(event) {
         console.log(event);
 
-        let scale = this.dimensions.width / this.canvas.width; 
+        let scale = this.baseImage.width / this.canvas.width; 
         console.log(scale)
 
         //the real point I think..
@@ -206,8 +206,9 @@ export default {
         // }
         let point = {
             x: event.layerX * scale,
-            y: event.layerY * scale
+            y: event.layerY * scale, 
         }
+        
         this.context.beginPath();
         this.context.arc(point.x, point.y, this.radius, 0, 2 * Math.PI);
         this.context.fillStyle = 'blue';
