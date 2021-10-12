@@ -27,7 +27,8 @@ export default {
       currentPointInOrigin: {},
       moveStartingPoint: {},
       dragging: false,
-      context: {}
+      context: {},
+      distance: 0
     }
   },
   mounted() {
@@ -64,14 +65,68 @@ export default {
         document.querySelector("div.pinch-zoom-container").style.display = "none";
         this.zoom.disable();
     },
+    
+    touchStartHandler(event) {
+        event.preventDefault();
+
+        event = event.originalEvent || event;
+        // console.log(event)
+
+
+        if(event.touches.length == 1) {
+
+            this.dragging = true;
+            this.zooming = false;
+            console.log("drag");
+
+            this.moveStartingPoint = {
+                layerX: event.layerX,
+                layerY: event.layerY,
+            };
+            
+
+        } else if(event.touches.length == 2){
+            this.zooming = true;
+            this.dragging = false;
+            console.log("zoom");
+
+            console.log(event)
+
+            this.distance = this.distanceBetween2Touches(event.touches[0], event.touches[0]);
+        }
+
+
+        console.log(1);
+
+        let scale = this.canvas.width / this.baseImage.width;
+
+        console.log(scale)
+
+        let ratio = this.canvas.clientWidth / this.canvas.width;
+
+    },
     moveHandler(event) {
-
-        if(event.touches > 1) return;
-
         event.preventDefault();
         console.log("move");
         // event = event.originalEvent || event;
 
+        if(event.touches.length == 1 && this.dragging) {
+            this.handleDrag(event);
+        };
+
+        if(event.touches.length == 2 && this.zooming) {
+            this.handleZoom(event);
+        }
+
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y);  
+    },
+    touchEndHandler(event) {
+        event.preventDefault();
+        this.zooming = false;
+        this.dragging = false;
+    },
+    handleDrag(event) {
         //update current position
         this.currentPointInOrigin.x =  this.currentPointInOrigin.x - (this.moveStartingPoint.layerX - event.layerX) ;
         this.currentPointInOrigin.y =  this.currentPointInOrigin.y - (this.moveStartingPoint.layerY - event.layerY) ;
@@ -90,49 +145,22 @@ export default {
             layerY: event.layerY,
         };
 
-
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y);  
     },
-    touchStartHandler(event) {
-        event.preventDefault();
+    handleZoom(event) {
+        let newDistance = this.distanceBetween2Touches(event.touches[0],event.touches[1]);
 
-        event = event.originalEvent || event;
-
-        console.log(event)
-
-        if(event.touches.length == 1) {
-
-            this.dragging = true;
-            this.zooming = false;
-            console.log("drag");
-
-            this.moveStartingPoint = {
-                layerX: event.layerX,
-                layerY: event.layerY,
-            };
-            
-
-        } else if(event.touches.length == 2){
-            this.zooming = true;
-            this.dragging = false;
-            console.log("zoom");
+        if(newDistance > this.distance) {
+            //zoom out
+            console.log("zoom out")
+        } else {
+            //zoom in
+            console.log("zoom in")
         }
 
-
-        console.log(1);
-
-        let scale = this.canvas.width / this.baseImage.width;
-
-        console.log(scale)
-
-        let ratio = this.canvas.clientWidth / this.canvas.width;
-
+        this.distance = newDistance;
     },
-    touchEndHandler(event) {
-        event.preventDefault();
-        this.zooming = false;
-        this.dragging = false;
+    distanceBetween2Touches(a,b) {
+        return Math.sqrt(Math.pow((a.clientX - b.clientX), 2) + Math.pow((a.clientY - b.clientY), 2))
     }
   }
 }
