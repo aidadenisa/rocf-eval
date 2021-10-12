@@ -21,106 +21,119 @@ export default {
       cropper: {},
       preview: '', 
       showPoints: false,
-      zoom: {}
+      zoom: {},
+      canvas: {},
+      baseImage: {},
+      currentPointInOrigin: {},
+      moveStartingPoint: {},
+      dragging: false,
+      context: {}
     }
   },
   mounted() {
     this.imageSrc = this.$store.state.image;
+    this.setupCanvas();
+  },
+  methods: {
+    setupCanvas() {
+        this.canvas = document.getElementById('overlay'),
+        this.context = this.canvas.getContext('2d');
+        this.context.imageSmoothingEnabled = false;
 
-    var canvas = document.getElementById('overlay'),
-    context = canvas.getContext('2d');
-    context.imageSmoothingEnabled = false;
+        this.baseImage = new Image();
+        this.baseImage.src = this.imageSrc ;
 
-    let base_image = new Image();
-    base_image.src = this.imageSrc ;
+        this.canvas.width = window.screen.width * window.devicePixelRatio;
+        this.canvas.height = 0.7 * window.screen.height * window.devicePixelRatio;
 
-    canvas.width = window.screen.width * window.devicePixelRatio;
-    // canvas.height = parseInt(window.screen.width * this.paperRatio) * window.devicePixelRatio;
-    canvas.height = 0.7 * window.screen.height * window.devicePixelRatio;
+        console.log("canvas dim: ", this.canvas.width, this.canvas.height)
 
-    console.log("canvas dim: ", canvas.width, canvas.height)
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.currentPointInOrigin = { x: - this.canvas.width / 4, y: 0 }
 
-    let currentPointInOrigin = { x: - canvas.width / 4, y: 0 }
+        this.canvas.addEventListener('touchstart', this.touchStartHandler);
+        this.canvas.addEventListener('touchmove', this.moveHandler);
+        this.canvas.addEventListener('touchend', this.touchEndHandler);
 
-    // console.log(canvas.clientWidth, canvas.clientHeight)
+        this.baseImage.onload = () => {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y, this.baseImage.width, this.baseImage.height);
+        }
+    },
+    reset() {
+        this.showPoints = !this.showPoints;
+        document.querySelector("div.pinch-zoom-container").style.display = "none";
+        this.zoom.disable();
+    },
+    moveHandler(event) {
 
+        if(event.touches > 1) return;
 
-    canvas.addEventListener('touchstart', (event) => {
         event.preventDefault();
+        console.log("move");
+        // event = event.originalEvent || event;
+
+        //update current position
+        this.currentPointInOrigin.x =  this.currentPointInOrigin.x - (this.moveStartingPoint.layerX - event.layerX) ;
+        this.currentPointInOrigin.y =  this.currentPointInOrigin.y - (this.moveStartingPoint.layerY - event.layerY) ;
 
 
-        event = event.originalEvent || event;
+        //if current position if outside of bounds, set it to the bounds
+        this.currentPointInOrigin.x = this.currentPointInOrigin.x > 0 ? 0 : this.currentPointInOrigin.x;
+        this.currentPointInOrigin.x = (- this.currentPointInOrigin.x) + this.canvas.width > this.baseImage.width ? - (this.baseImage.width - this.canvas.width) : this.currentPointInOrigin.x;
 
+        this.currentPointInOrigin.y = this.currentPointInOrigin.y > 0 ? 0 : this.currentPointInOrigin.y;
+        this.currentPointInOrigin.y = (- this.currentPointInOrigin.y) +  this.canvas.height > this.baseImage.height  ?  - ( this.baseImage.height - this.canvas.height) : this.currentPointInOrigin.y;
+        this.info = [(- this.currentPointInOrigin.x), (- this.currentPointInOrigin.y) ] ;
 
-        console.log(event)
-
-        let moveStartingPoint = {
+        this.moveStartingPoint = {
             layerX: event.layerX,
             layerY: event.layerY,
         };
-        console.log(1);
-
-        let scale = canvas.width / base_image.width;
-
-        console.log(scale)
-
-        let ratio = canvas.clientWidth / canvas.width;
-
-    
-        const moveHandler = (event) => {
-            event.preventDefault();
-            console.log("move");
-            // event = event.originalEvent || event;
-
-            //update current position
-            currentPointInOrigin.x =  currentPointInOrigin.x - (moveStartingPoint.layerX - event.layerX) ;
-            currentPointInOrigin.y =  currentPointInOrigin.y - (moveStartingPoint.layerY - event.layerY) ;
 
 
-            //if current position if outside of bounds, set it to the bounds
-            currentPointInOrigin.x = currentPointInOrigin.x > 0 ? 0 : currentPointInOrigin.x;
-            currentPointInOrigin.x = (- currentPointInOrigin.x) + canvas.width > base_image.width ? - (base_image.width - canvas.width) : currentPointInOrigin.x;
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y);  
+    },
+    touchStartHandler(event) {
+        event.preventDefault();
 
-            currentPointInOrigin.y = currentPointInOrigin.y > 0 ? 0 : currentPointInOrigin.y;
-            currentPointInOrigin.y = (- currentPointInOrigin.y) +  canvas.height > base_image.height  ?  - ( base_image.height - canvas.height) : currentPointInOrigin.y;
-            this.info = [(- currentPointInOrigin.x), (- currentPointInOrigin.y) ] ;
+        event = event.originalEvent || event;
 
-            moveStartingPoint = {
+        console.log(event)
+
+        if(event.touches.length == 1) {
+
+            this.dragging = true;
+            this.zooming = false;
+            console.log("drag");
+
+            this.moveStartingPoint = {
                 layerX: event.layerX,
                 layerY: event.layerY,
             };
-
-
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(base_image, currentPointInOrigin.x, currentPointInOrigin.y);
-    
             
-        };
 
-        const stopHandler = (event) => {
-            event.preventDefault();
-            canvas.removeEventListener('touchmove', moveHandler);
-            canvas.removeEventListener('touchend', stopHandler);
+        } else if(event.touches.length == 2){
+            this.zooming = true;
+            this.dragging = false;
+            console.log("zoom");
         }
 
-        canvas.addEventListener('touchmove', moveHandler);
-        canvas.addEventListener('touchend', stopHandler);
 
-    });
+        console.log(1);
 
-    base_image.onload = () => {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(base_image, currentPointInOrigin.x, currentPointInOrigin.y, base_image.width, base_image.height);
+        let scale = this.canvas.width / this.baseImage.width;
+
+        console.log(scale)
+
+        let ratio = this.canvas.clientWidth / this.canvas.width;
+
+    },
+    touchEndHandler(event) {
+        event.preventDefault();
+        this.zooming = false;
+        this.dragging = false;
     }
-    
-  },
-  methods: {
-      reset() {
-          this.showPoints = !this.showPoints;
-          document.querySelector("div.pinch-zoom-container").style.display = "none";
-          this.zoom.disable();
-      }
   }
 }
 </script>
