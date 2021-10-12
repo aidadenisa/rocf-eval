@@ -21,14 +21,18 @@ export default {
       cropper: {},
       preview: '', 
       showPoints: false,
-      zoom: {},
+      zoom: 1,
       canvas: {},
       baseImage: {},
       currentPointInOrigin: {},
       moveStartingPoint: {},
       dragging: false,
       context: {},
-      distance: 0
+      distance: 0,
+      dimensions: {
+          width: 0,
+          height: 0
+      },
     }
   },
   mounted() {
@@ -56,14 +60,13 @@ export default {
         this.canvas.addEventListener('touchend', this.touchEndHandler);
 
         this.baseImage.onload = () => {
+            this.dimensions = {
+                width: this.baseImage.width,
+                height: this.baseImage.height
+            }
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y, this.baseImage.width, this.baseImage.height);
+            this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y, this.dimensions.width, this.dimensions.height);
         }
-    },
-    reset() {
-        this.showPoints = !this.showPoints;
-        document.querySelector("div.pinch-zoom-container").style.display = "none";
-        this.zoom.disable();
     },
     
     touchStartHandler(event) {
@@ -98,7 +101,7 @@ export default {
 
         console.log(1);
 
-        let scale = this.canvas.width / this.baseImage.width;
+        let scale = this.canvas.width / this.dimensions.width;
 
         console.log(scale)
 
@@ -116,10 +119,15 @@ export default {
 
         if(event.touches.length == 2 && this.zooming) {
             this.handleZoom(event);
-        }
-
+        } 
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y);  
+        this.context.drawImage(
+            this.baseImage, 
+            this.currentPointInOrigin.x, 
+            this.currentPointInOrigin.y, 
+            this.dimensions.width, 
+            this.dimensions.height
+        );         
     },
     touchEndHandler(event) {
         event.preventDefault();
@@ -134,10 +142,14 @@ export default {
 
         //if current position if outside of bounds, set it to the bounds
         this.currentPointInOrigin.x = this.currentPointInOrigin.x > 0 ? 0 : this.currentPointInOrigin.x;
-        this.currentPointInOrigin.x = (- this.currentPointInOrigin.x) + this.canvas.width > this.baseImage.width ? - (this.baseImage.width - this.canvas.width) : this.currentPointInOrigin.x;
+        this.currentPointInOrigin.x = (- this.currentPointInOrigin.x) + this.canvas.width > this.dimensions.width 
+                                        ? - (this.dimensions.width - this.canvas.width) 
+                                        : this.currentPointInOrigin.x;
 
         this.currentPointInOrigin.y = this.currentPointInOrigin.y > 0 ? 0 : this.currentPointInOrigin.y;
-        this.currentPointInOrigin.y = (- this.currentPointInOrigin.y) +  this.canvas.height > this.baseImage.height  ?  - ( this.baseImage.height - this.canvas.height) : this.currentPointInOrigin.y;
+        this.currentPointInOrigin.y = (- this.currentPointInOrigin.y) +  this.canvas.height > this.dimensions.height 
+                                        ?  - ( this.dimensions.height - this.canvas.height) 
+                                        : this.currentPointInOrigin.y;
         this.info = [(- this.currentPointInOrigin.x), (- this.currentPointInOrigin.y) ] ;
 
         this.moveStartingPoint = {
@@ -149,13 +161,29 @@ export default {
     handleZoom(event) {
         let newDistance = this.distanceBetween2Touches(event.touches[0],event.touches[1]);
 
+        const deltaZoom = 0.1
+
         if(newDistance > this.distance) {
-            //zoom out
-            console.log("zoom out")
-        } else {
             //zoom in
             console.log("zoom in")
+            this.zoom += deltaZoom;
+        } else {
+            //zoom out
+            console.log("zoom out")
+             this.zoom -= deltaZoom;
         }
+
+        if(this.zoom < 1) {
+            this.zoom = 1;
+        }
+        if(this.zoom > 4) {
+            this.zoom = 4;
+        }
+
+        this.dimensions = {
+            width: this.baseImage.width * this.zoom,
+            height: this.currentImageHeight = this.baseImage.height * this.zoom
+        };
 
         this.distance = newDistance;
     },
