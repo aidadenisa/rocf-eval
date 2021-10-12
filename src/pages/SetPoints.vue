@@ -33,6 +33,7 @@ export default {
           width: 0,
           height: 0
       },
+      radius: 100
     }
   },
   mounted() {
@@ -79,6 +80,7 @@ export default {
         if(event.touches.length == 1) {
 
             this.dragging = true;
+            this.settingPoint = true;
             this.zooming = false;
             console.log("drag");
 
@@ -101,15 +103,14 @@ export default {
 
         console.log(1);
 
-        let scale = this.canvas.width / this.dimensions.width;
 
-        console.log(scale)
 
         let ratio = this.canvas.clientWidth / this.canvas.width;
 
     },
     moveHandler(event) {
         event.preventDefault();
+        this.settingPoint = false;
         console.log("move");
         // event = event.originalEvent || event;
 
@@ -133,6 +134,11 @@ export default {
         event.preventDefault();
         this.zooming = false;
         this.dragging = false;
+        console.log(this.settingPoint)
+        if(this.settingPoint) {
+            this.setPoint(event);
+        }
+        
     },
     handleDrag(event) {
         //update current position
@@ -170,7 +176,7 @@ export default {
         } else {
             //zoom out
             console.log("zoom out")
-             this.zoom -= deltaZoom;
+            this.zoom -= deltaZoom;
         }
 
         if(this.zoom < 1) {
@@ -186,6 +192,26 @@ export default {
         };
 
         this.distance = newDistance;
+    },
+    setPoint(event) {
+        console.log(event);
+
+        let scale = this.dimensions.width / this.canvas.width; 
+        console.log(scale)
+
+        //the real point I think..
+        // let point = {
+        //     x: ((- this.currentPointInOrigin.x + event.layerX) / this.canvas.width) * this.dimensions.width,
+        //     y: ((- this.currentPointInOrigin.y + event.layerY) / this.canvas.height) * this.dimensions.height,
+        // }
+        let point = {
+            x: event.layerX * scale,
+            y: event.layerY * scale
+        }
+        this.context.beginPath();
+        this.context.arc(point.x, point.y, this.radius, 0, 2 * Math.PI);
+        this.context.fillStyle = 'blue';
+        this.context.fill();
     },
     distanceBetween2Touches(a,b) {
         return Math.sqrt(Math.pow((a.clientX - b.clientX), 2) + Math.pow((a.clientY - b.clientY), 2))
