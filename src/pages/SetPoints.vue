@@ -1,9 +1,11 @@
 <template>
   <q-page >
       
-    Please set the 5 refference points:
+    Please set the 5 refference points: <br>
     {{info}}
-    <canvas id="overlay"></canvas>
+    <div class="canvas-container">
+        <canvas id="overlay"></canvas>
+    </div>
   </q-page>
 </template>
 
@@ -17,7 +19,7 @@ export default {
       info:'', 
       cameraOptionsBarHeight: 120,
       imageSrc: '',
-      paperRatio: 148.5 / 210,
+      aspectRatio: 1,
       cropper: {},
       preview: '', 
       showPoints: false,
@@ -33,7 +35,8 @@ export default {
           width: 0,
           height: 0
       },
-      radius: 100
+      radius: 20,
+      points: []
     }
   },
   mounted() {
@@ -54,6 +57,8 @@ export default {
 
         console.log("canvas dim: ", this.canvas.width, this.canvas.height)
 
+        this.aspectRatio = this.canvas.width / this.canvas.height;
+
         this.currentPointInOrigin = { x: - this.canvas.width / 4, y: 0 }
 
         this.canvas.addEventListener('touchstart', this.touchStartHandler);
@@ -65,8 +70,7 @@ export default {
                 width: this.baseImage.width,
                 height: this.baseImage.height
             }
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y, this.dimensions.width, this.dimensions.height);
+            this.drawImage();
         }
     },
     
@@ -99,14 +103,6 @@ export default {
 
             this.distance = this.distanceBetween2Touches(event.touches[0], event.touches[0]);
         }
-
-
-        console.log(1);
-
-
-
-        let ratio = this.canvas.clientWidth / this.canvas.width;
-
     },
     moveHandler(event) {
         event.preventDefault();
@@ -121,20 +117,12 @@ export default {
         if(event.touches.length == 2 && this.zooming) {
             this.handleZoom(event);
         } 
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.drawImage(
-            this.baseImage, 
-            this.currentPointInOrigin.x, 
-            this.currentPointInOrigin.y, 
-            this.dimensions.width, 
-            this.dimensions.height
-        );         
+        this.drawImage();        
     },
     touchEndHandler(event) {
         event.preventDefault();
         this.zooming = false;
         this.dragging = false;
-        console.log(this.settingPoint)
         if(this.settingPoint) {
             this.setPoint(event);
         }
@@ -197,22 +185,48 @@ export default {
         console.log(event);
 
         let scale = this.baseImage.width / this.canvas.width; 
-        console.log(scale)
-
-        //the real point I think..
-        // let point = {
-        //     x: ((- this.currentPointInOrigin.x + event.layerX) / this.canvas.width) * this.dimensions.width,
-        //     y: ((- this.currentPointInOrigin.y + event.layerY) / this.canvas.height) * this.dimensions.height,
-        // }
+        
         let point = {
             x: event.layerX * scale,
             y: event.layerY * scale, 
         }
-        
+
         this.context.beginPath();
-        this.context.arc(point.x, point.y, this.radius, 0, 2 * Math.PI);
+        this.context.arc(point.x, point.y, this.radius * this.zoom, 0, 2 * Math.PI);
         this.context.fillStyle = 'blue';
         this.context.fill();
+
+        //the real point
+        let pointOnImage = {
+            x: ((this.canvas.width * (event.layerX / this.canvas.clientWidth ))  + (- this.currentPointInOrigin.x )) / this.zoom,
+            y: ((this.canvas.height * (event.layerY / this.canvas.clientHeight ))  + (- this.currentPointInOrigin.y )) / this.zoom,
+        }
+
+        this.info = [pointOnImage.x, pointOnImage.y]
+        console.log(pointOnImage)
+
+        this.points.push(pointOnImage);
+
+    },
+    drawImage() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y, this.dimensions.width, this.dimensions.height);
+
+        this.drawPoints();
+    },
+    drawPoints() {
+        if(!this.points.length) return;
+
+        for(let i=0; i<this.points.length; i++ ) {
+            let point = {
+                x: this.points[i].x * this.zoom + this.currentPointInOrigin.x,
+                y: this.points[i].y * this.zoom + this.currentPointInOrigin.y, 
+            }
+            this.context.beginPath();
+            this.context.arc(point.x, point.y, this.radius * this.zoom, 0, 2 * Math.PI);
+            this.context.fillStyle = 'blue';
+            this.context.fill();
+        }
     },
     distanceBetween2Touches(a,b) {
         return Math.sqrt(Math.pow((a.clientX - b.clientX), 2) + Math.pow((a.clientY - b.clientY), 2))
