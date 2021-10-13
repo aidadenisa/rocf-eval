@@ -6,6 +6,9 @@
     <div class="canvas-container">
         <canvas id="overlay"></canvas>
     </div>
+    <q-btn @click="resetPoints">Reset Points</q-btn> 
+    <br>
+    <q-btn @click="evaluateROCF"> Evaluate ROCF</q-btn>
   </q-page>
 </template>
 
@@ -184,6 +187,11 @@ export default {
     setPoint(event) {
         console.log(event);
 
+        if(this.points.length >= 5) {
+            alert("You should set only 5 points!");
+            return;
+        }
+
         let scale = this.baseImage.width / this.canvas.width; 
         
         let point = {
@@ -228,8 +236,18 @@ export default {
             this.context.fill();
         }
     },
+    resetPoints() {
+        this.points = [];
+        this.drawImage();
+    },
     distanceBetween2Touches(a,b) {
         return Math.sqrt(Math.pow((a.clientX - b.clientX), 2) + Math.pow((a.clientY - b.clientY), 2))
+    },
+    evaluateROCF() {
+        if(this.points.length !== 5) {
+            alert(`There are only ${this.points.length} points set. You should set 5 points!`);
+        }
+        //send the image for evaluation
     }
   }
 }
