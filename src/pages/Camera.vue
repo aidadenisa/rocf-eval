@@ -57,7 +57,7 @@ export default {
         height: 1512
       },
       (base64PictureData) => {
-        this.imageSrc = `data:image/jpeg;base64,${base64PictureData}`
+        this.imageSrc = `data:image/png;base64,${base64PictureData}`
         this.$store.dispatch('fetchImage', this.imageSrc);
 
         this.$router.push('adjust-photo');

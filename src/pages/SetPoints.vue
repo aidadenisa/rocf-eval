@@ -9,11 +9,13 @@
     <q-btn @click="resetPoints">Reset Points</q-btn> 
     <br>
     <q-btn @click="evaluateROCF"> Evaluate ROCF</q-btn>
+
+    <img :src="result"/>
   </q-page>
 </template>
 
 <script>
-import PinchZoom from 'pinch-zoom-js'
+import api from '../services/api';
 
 export default {
   name: 'Camera',
@@ -39,7 +41,8 @@ export default {
           height: 0
       },
       radius: 20,
-      points: []
+      points: [],
+      result: ''
     }
   },
   mounted() {
@@ -248,6 +251,25 @@ export default {
             alert(`There are only ${this.points.length} points set. You should set 5 points!`);
         }
         //send the image for evaluation
+        let data = {};
+        data.points = [];
+        for(let i=0; i<this.points.length; i++) {
+            data.points.push([this.points[i].x, this.points[i].y]);
+        }
+
+        const index = this.imageSrc.indexOf('data:image/png;base64,');
+        data.imageb64 = ( index > -1) 
+                        ? this.imageSrc.slice(('data:image/png;base64,').length)
+                        : this.imageSrc;
+        
+
+        api.put('/preprocessing', data )
+            .then(response => {
+
+                const image = response.image.replaceAll("'", "").slice(1);
+                // console.log(`data:image/png;base64,${image}`)
+                this.result = `data:image/png;base64,${image}`;
+            })
     }
   }
 }
