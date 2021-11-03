@@ -8,7 +8,7 @@
     </div>
     <q-btn @click="resetPoints">Reset Points</q-btn> 
     <br>
-    <q-btn @click="evaluateROCF"> Evaluate ROCF</q-btn>
+    <q-btn @click="savePoints">Save Points</q-btn>
 
     <img :src="result"/>
   </q-page>
@@ -246,11 +246,18 @@ export default {
     distanceBetween2Touches(a,b) {
         return Math.sqrt(Math.pow((a.clientX - b.clientX), 2) + Math.pow((a.clientY - b.clientY), 2))
     },
-    evaluateROCF() {
+    savePoints() {
         if(this.points.length !== 5) {
             alert(`There are only ${this.points.length} points set. You should set 5 points!`);
+            return;
         }
-        //send the image for evaluation
+        this.info="I call this"
+        this.getHomography();
+    },
+    async getHomography() {
+        //send the image for preprocessing
+
+        this.info="this got called"
         let data = {};
         data.points = [];
         for(let i=0; i<this.points.length; i++) {
@@ -263,13 +270,14 @@ export default {
                         : this.imageSrc;
         
 
-        api.put('/preprocessing', data )
-            .then(response => {
+        let response = await api.put('/preprocessing', data )
+        const image = response.image.replaceAll("'", "").slice(1);
+        this.result = `data:image/png;base64,${image}`;
 
-                const image = response.image.replaceAll("'", "").slice(1);
-                // console.log(`data:image/png;base64,${image}`)
-                this.result = `data:image/png;base64,${image}`;
-            })
+        this.$store.dispatch('fetchImage', this.result);
+
+        this.$router.push('/evaluate/threshold');
+
     }
   }
 }

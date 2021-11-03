@@ -13,6 +13,9 @@
     "@quasar/extras": "^1.0.0",
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.12",
+    "crypto": "^1.0.1",
+    "fs": "^0.0.1-security",
+    "opencv.js": "^1.2.1",
     "pinch-zoom-js": "^2.3.4",
     "quasar": "^2.0.0",
     "vuex": "^4.0.2"
@@ -41,5 +44,11 @@
     "node": ">= 12.22.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false,
+    "crypto": false
   }
 }
