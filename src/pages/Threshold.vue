@@ -2,14 +2,27 @@
   <q-page >
       
     Please set the threshold: <br>
-    {{info}}
+    {{info}} {{threshold}}
+    <br/>
+    <input v-model="threshold" type="range" id="threshold" name="threshold"
+        min="150" max="256" @input="thresholdChanged">
+    <br/>
+    <label for="threshold">Threshold</label>
+
     <div class="canvas-container">
-        <canvas id="overlay"></canvas>
+      <canvas id="overlay" ref="canvas"></canvas>
     </div>
     <q-btn @click.prevent="updateThresholdValue">Update threshold value</q-btn> 
     <br>
-    <q-btn @click.prevent="">Save Points</q-btn>
+    <router-link to="/evaluate/camera">
+      <q-btn>back</q-btn>
+    </router-link>
 
+    <q-btn @click.prevent="setupCanvas">Setup canvas</q-btn> 
+    
+    
+
+    <canvas id="canvasOutput" width="512" height="512"></canvas>
     <!-- <img :src="result"/> -->
   </q-page>
 </template>
@@ -50,38 +63,58 @@ export default {
   mounted() {
     this.imageSrc = this.$store.state.image;
     this.setupCanvas();
+    this.updateThresholdValue();
   },
   methods: {
     setupCanvas() {
-        this.canvas = document.getElementById('overlay'),
-        this.context = this.canvas.getContext('2d');
-        this.context.imageSmoothingEnabled = false;
+      this.canvas = document.getElementById('overlay'),
+      this.context = this.canvas.getContext('2d');
+      this.context.imageSmoothingEnabled = false;
 
-        this.baseImage = new Image();
-        this.baseImage.src = this.imageSrc;
-        
+      this.baseImage = new Image();
+      this.baseImage.src = this.imageSrc;
+      
 
-        this.canvas.width = window.screen.width * window.devicePixelRatio;
-        this.canvas.height = window.screen.height * window.devicePixelRatio;
+      // this.canvas.width = window.screen.width * window.devicePixelRatio;
+      // this.canvas.height = window.screen.height * window.devicePixelRatio;
 
-        this.baseImage.onload = () => {
-            this.drawImage();
-        }
+      this.baseImage.onload = () => {
+          this.info = [this.baseImage.naturalWidth , this.baseImage.naturalHeight]
+
+          this.canvas.width = this.baseImage.naturalWidth;
+          this.canvas.height = this.baseImage.naturalHeight;
+          this.drawImage();
+      }
     },
     
     drawImage() {
-        const imageAspectRatio = this.baseImage.naturalHeight / this.baseImage.naturalWidth;
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.drawImage(this.baseImage, 0, 0, this.canvas.width, this.canvas.width * imageAspectRatio);
+      const imageAspectRatio = this.baseImage.naturalHeight / this.baseImage.naturalWidth;
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.drawImage(this.baseImage, 0, 0, this.canvas.width, this.canvas.width * imageAspectRatio);
 
-        this.info = (this.canvas)
+      this.info = (this.canvas)
 
     },
     updateThresholdValue() {
+      let imageMatrix = imageProcess.getImageAsMatrix(this.baseImage);
+      let hist = imageProcess.getHistogram(imageMatrix);
+      let threshold = imageProcess.getMaxDeviationThreshold(hist);
+      let newImage = imageProcess.getThresholdedImage(imageMatrix, threshold);
 
-        let hist = imageProcess.getHistogram(this.baseImage);
-        let threshold = imageProcess.getMaxDeviationThreshold(hist);
-        this.info = threshold
+      imageProcess.updateOpenCVImageInCanvas('overlay', newImage);
+
+      let imgtest = this.$refs.canvas.toDataURL("image/png");
+
+      imageMatrix.delete();
+      this.threshold = threshold;
+    },
+    thresholdChanged() {
+
+      let imageMatrix = imageProcess.getImageAsMatrix(this.baseImage);
+      let newImage = imageProcess.getThresholdedImage(imageMatrix, parseFloat(this.threshold));
+
+      imageProcess.updateOpenCVImageInCanvas('overlay', newImage);
+      imageMatrix.delete();    
     }
   }
 }
@@ -94,6 +127,9 @@ img {
 }
 
 canvas {
+    width: 100%;
+}
+input {
     width: 100%;
 }
 

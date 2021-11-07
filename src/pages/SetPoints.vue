@@ -269,15 +269,12 @@ export default {
                         ? this.imageSrc.slice(('data:image/png;base64,').length)
                         : this.imageSrc;
         
-
         let response = await api.put('/preprocessing', data )
         const image = response.image.replaceAll("'", "").slice(1);
         this.result = `data:image/png;base64,${image}`;
 
         this.$store.dispatch('fetchImage', this.result);
-
         this.$router.push('/evaluate/threshold');
-
     }
   }
 }
