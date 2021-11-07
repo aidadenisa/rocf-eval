@@ -5,7 +5,7 @@
     {{info}} {{threshold}}
     <br/>
     <input v-model="threshold" type="range" id="threshold" name="threshold"
-        min="150" max="256" @input="thresholdChanged">
+        :min="minThreshold" :max="maxThreshold" @input="thresholdChanged">
     <br/>
     <label for="threshold">Threshold</label>
 
@@ -57,7 +57,9 @@ export default {
       radius: 20,
       points: [],
       result: '',
-      threshold: 0
+      threshold: 0,
+      minThreshold: 0,
+      maxThreshold: 256,
     }
   },
   mounted() {
@@ -96,6 +98,7 @@ export default {
 
     },
     updateThresholdValue() {
+      
       let imageMatrix = imageProcess.getImageAsMatrix(this.baseImage);
       let hist = imageProcess.getHistogram(imageMatrix);
       let threshold = imageProcess.getMaxDeviationThreshold(hist);
@@ -106,7 +109,10 @@ export default {
       let imgtest = this.$refs.canvas.toDataURL("image/png");
 
       imageMatrix.delete();
+      newImage.delete();
       this.threshold = threshold;
+      this.minThreshold = threshold - 20;
+      this.maxThreshold = threshold + 20;
     },
     thresholdChanged() {
 
@@ -114,7 +120,8 @@ export default {
       let newImage = imageProcess.getThresholdedImage(imageMatrix, parseFloat(this.threshold));
 
       imageProcess.updateOpenCVImageInCanvas('overlay', newImage);
-      imageMatrix.delete();    
+      imageMatrix.delete();
+      newImage.delete();    
     }
   }
 }
