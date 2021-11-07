@@ -87,23 +87,49 @@ const imgProcess = {
         src.setTo(blackColor, drawingMask);
         src.setTo(whiteColor, notDrawingMask);
 
-        // const eroded = new cv.Mat();
-        // let kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(9, 9))
-        // cv.erode(src, eroded, kernel);
+        // SOME EROSION AND DILATION - INCOMPLETE
 
-        // const background = new cv.Mat();
-        // cv.bitwise_not(eroded, background);
-        
+        // const eroded = new cv.Mat();
+        // let kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(3, 3))
+        // cv.erode(notDrawingMask, eroded, kernel);
+
+        // const reverseEroded = new cv.Mat();
+        // cv.bitwise_not(eroded, reverseEroded);
+
         // const imgDilated = new cv.Mat();
         // kernel = cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(5,5));
-        // cv.dilate(background, imgDilated, kernel, new cv.Point(-1, 1), 1);
-        
-        drawingMask.delete(); low.delete(); tresh.delete(); background.delete()
+        // cv.dilate(reverseEroded, imgDilated, kernel, new cv.Point(-1, 1), 1);
 
-        return imgDilated;
+        // morphologyEx() to perform more operations ????
+
+        // reverseEroded.delete(); kernel.delete();
+        drawingMask.delete(); low.delete(); tresh.delete(); 
+
+        return src;
     },
     updateOpenCVImageInCanvas: (canvasId, imageSrc) => {
         cv.imshow(canvasId, imageSrc);
+    },
+    findContours: (source) => {
+        let dst = cv.Mat.zeros(src.cols, src.rows, cv.CV_8UC3);
+        let contours = new cv.MatVector();
+        let hierarchy = new cv.Mat();
+        cv.findContours(source, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE);
+
+        let maxContour = 0;
+        for (let i = 0; i < contours.size(); ++i) {
+            if(cv.contourArea(contours.get(i)) > cv.contourArea(contours.get(maxContour))) {
+                maxContour = i;
+            }
+        }
+        let color = new cv.Scalar(Math.round(Math.random() * 255), Math.round(Math.random() * 255),
+                                Math.round(Math.random() * 255));
+        cv.drawContours(dst, contours, maxContour, color, 1, cv.LINE_8, hierarchy, 100);
+        // cv.imshow('canvasOutput', dst);
+        source.delete(); contours.delete(); hierarchy.delete();
+
+        // contours, hierarchy = cv2.findContours(thresh.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        return dst;
     }
 }
 
