@@ -1,17 +1,5 @@
 import cv from './opencv.js'; //use cv
 
-// if (cv.getBuildInformation)
-// {
-//     console.log(cv.getBuildInformation());
-// }
-// else
-// {
-//     // WASM
-//     cv['onRuntimeInitialized']=()=>{
-//         console.log(cv.getBuildInformation());
-//     }
-// }
-
 const imgProcess = {
     getImageAsMatrix: (image) => {
         let img = cv.imread(image);
@@ -130,6 +118,22 @@ const imgProcess = {
 
         // contours, hierarchy = cv2.findContours(thresh.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         return dst;
+    },
+    isOpenCVLoaded: async () => {
+        return new Promise((resolve, reject) => {
+            if (cv.getBuildInformation) {
+                resolve(cv.getBuildInformation());
+                return;
+            }
+            else {
+                // WASM
+                cv['onRuntimeInitialized']=()=>{
+                    resolve(cv.getBuildInformation());
+                    return;
+                }
+            }
+            reject();
+        });
     }
 }
 

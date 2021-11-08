@@ -2,10 +2,9 @@
   <q-page >
       
     Please set the threshold: <br>
-    {{info}} {{threshold}}
+    {{info}} {{threshold}} {{loading}}
     <br/>
-    <input v-model="threshold" type="range" id="threshold" name="threshold"
-        :min="minThreshold" :max="maxThreshold" @input="thresholdChanged">
+     <q-slider v-model="threshold" :min="minThreshold" :max="maxThreshold"/>
     <br/>
     <label for="threshold">Threshold</label>
 
@@ -57,15 +56,16 @@ export default {
       radius: 20,
       points: [],
       result: '',
-      threshold: 0,
+      threshold: 256/2,
       minThreshold: 0,
       maxThreshold: 256,
+      loading: true,
     }
   },
-  mounted() {
+  async mounted() {
     this.imageSrc = this.$store.state.image;
+    await this.waitForOpenCVToBeLoaded();
     this.setupCanvas();
-    this.updateThresholdValue();
   },
   methods: {
     setupCanvas() {
@@ -86,6 +86,7 @@ export default {
           this.canvas.width = this.baseImage.naturalWidth;
           this.canvas.height = this.baseImage.naturalHeight;
           this.drawImage();
+          this.updateThresholdValue();
       }
     },
     
@@ -104,15 +105,15 @@ export default {
       let threshold = imageProcess.getMaxDeviationThreshold(hist);
       let newImage = imageProcess.getThresholdedImage(imageMatrix, threshold);
 
-      imageProcess.updateOpenCVImageInCanvas('overlay', newImage);
-
-      let imgtest = this.$refs.canvas.toDataURL("image/png");
-
-      imageMatrix.delete();
-      newImage.delete();
       this.threshold = threshold;
       this.minThreshold = threshold - 20;
       this.maxThreshold = threshold + 20;
+
+      imageProcess.updateOpenCVImageInCanvas('overlay', newImage);
+
+      let imgtest = this.$refs.canvas.toDataURL("image/png");
+      imageMatrix.delete();
+      newImage.delete();
     },
     thresholdChanged() {
 
@@ -122,6 +123,19 @@ export default {
       imageProcess.updateOpenCVImageInCanvas('overlay', newImage);
       imageMatrix.delete();
       newImage.delete();    
+    },
+    async waitForOpenCVToBeLoaded() {
+      await imageProcess.isOpenCVLoaded()
+        .catch( () => {
+          this.loading = true;
+          console.log("CANNOT LOAD OPEN CV")
+        });
+      this.loading = false;
+    }
+  },
+  watch: {
+    threshold(value) {
+      this.thresholdChanged()
     }
   }
 }

@@ -268,6 +268,7 @@ export default {
         data.imageb64 = ( index > -1) 
                         ? this.imageSrc.slice(('data:image/png;base64,').length)
                         : this.imageSrc;
+        data.gamma = 0.7;
         
         let response = await api.put('/preprocessing', data )
         const image = response.image.replaceAll("'", "").slice(1);
