@@ -7,7 +7,6 @@
     <router-link to="/evaluate/patient">
       <new-rocf></new-rocf>
     </router-link>
-    {{info}}
 
     <!--Add here search bar-->
 
@@ -77,12 +76,6 @@ export default {
   margin-top: 40px;
   margin-bottom: var(--rocf-content-margin-x);
 }
-.rocf-header h3, 
-.rocf-header h2, 
-.rocf-evaluations h3 {
-  margin: 0;
-  line-height: 2rem;
-}
 .rocf-header .greeting {
   font-size: 18px;
 }
@@ -97,5 +90,6 @@ export default {
 }
 .rocf-evaluations h3 {
   font-weight: 600;
+  margin-bottom: calc(0.5 * var(--rocf-content-margin-x));
 }
 </style>

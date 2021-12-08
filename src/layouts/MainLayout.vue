@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" >
+  <q-layout view="lHh Lpr lFf">
     <!-- <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -58,14 +58,13 @@ export default defineComponent({
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
     }
-  }
+  },
+
 })
 </script>
 
 <style scoped>
-  /* .q-layout {
-    background-color: red
-  } */
+
 </style>

@@ -8,10 +8,11 @@
   --rocf-dementia: #FFE3E3;
   --rocf-dementia-dark: #FF2323;
   --rocf-text-color: #2B2B2B;
+  --rocf-text-color-gray: #878787;
   --rocf-content-margin-x: 16px;
   --rocf-card-padding: 16px;
   --rocf-card-radius: 8px;
-  --rocf-page-padding: 16px;
+  --rocf-page-padding: 20px;
   --rocf-card-shadow: 0px 4px 12px rgba(117, 117, 117, 0.1);
 }
 

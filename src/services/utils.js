@@ -11,6 +11,9 @@ const utils = {
     }
     return '';
   },
+  hasHistory () { 
+    return window.history.length > 2;
+  }
 };
 
 export default utils;
