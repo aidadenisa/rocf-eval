@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="lHh Lpr lFf" >
+    <!-- <q-header elevated>
       <q-toolbar>
         <q-btn
           flat
@@ -16,9 +16,9 @@
         </q-toolbar-title>
 
       </q-toolbar>
-    </q-header>
+    </q-header> -->
 
-    <q-drawer
+    <!-- <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -32,7 +32,7 @@
         ...
 
       </q-list>
-    </q-drawer>
+    </q-drawer> -->
 
     <q-page-container>
       <router-view />
@@ -63,3 +63,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+  /* .q-layout {
+    background-color: red
+  } */
+</style>

@@ -1,25 +1,41 @@
 <template>
-  <q-page class="flex flex-center">  
+  <q-page class="flex column flex-start">  
+    <div class="rocf-header">
+      <h3 class="greeting">Good Morning,</h3>
+      <h2 class="doctor-name">Dr. Rossi</h2>
+    </div>
     <router-link to="/evaluate/patient">
-      <q-btn color="primary">Scan new ROCF</q-btn>
+      <new-rocf></new-rocf>
     </router-link>
-    {{results}}
-
-    <br>
     {{info}}
+
+    <!--Add here search bar-->
+
+    <div class="rocf-evaluations">
+      <h3> Previous ROCF Evaluations </h3>
+
+      <rocf-list :rocfs="rocfs"></rocf-list>
+    </div>
   </q-page>
 </template>
 
 <script>
 import api from '../services/api'
+import NewRocf from '../components/NewROCF.vue'
+import RocfList from '../components/ROCFList.vue'
 
 export default {
   name: 'Dashboard',
   data() {
     return {
       results: null,
-      info: ''
+      info: '',
+      rocfs: []
     };
+  },
+  components: {
+    NewRocf,
+    RocfList,
   },
   methods: {
     checkIfEvaluationInProgress() {
@@ -31,17 +47,55 @@ export default {
     setIntervalForRetrievingResults(evaluationInProgressId) {
       const retrieveResultsInterval = setInterval(async () => {
         let result = await api.get('/rocf/' + evaluationInProgressId);
-        this.info = "checking...."
+        // this.info = "checking...."
         if(result.predictionTotalScores) {
           this.results = result.predictionTotalScores;
           localStorage.removeItem('evaluationInProgressId');
           clearInterval(retrieveResultsInterval)
         }
       }, 15000);
+    },
+    async getLastROCFs() {
+      this.rocfs = await api.get('/rocf');
+      console.log(this.rocfs)
+      // this.info = this.rocfs
+      this.$store.dispatch('fetchNewRocfEvaluations', this.rocfs);
     }
   },
-  beforeMount() {
+  async mounted() {
     this.checkIfEvaluationInProgress();
-  }
+    await this.getLastROCFs();
+  },
+  beforeMount() {
+    this.rocfs = this.$store.state.rocfEvaluations;
+  },
 }
 </script>
+
+<style scoped>
+.rocf-header {
+  margin-top: 40px;
+  margin-bottom: var(--rocf-content-margin-x);
+}
+.rocf-header h3, 
+.rocf-header h2, 
+.rocf-evaluations h3 {
+  margin: 0;
+  line-height: 2rem;
+}
+.rocf-header .greeting {
+  font-size: 18px;
+}
+.rocf-header .doctor-name {
+  color: var(--rocf-primary);
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.rocf-evaluations {
+  margin-top: calc(2 * var(--rocf-content-margin-x));
+}
+.rocf-evaluations h3 {
+  font-weight: 600;
+}
+</style>

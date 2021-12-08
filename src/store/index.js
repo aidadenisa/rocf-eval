@@ -14,7 +14,8 @@ export default async function(/* { ssrContext } */) {
     state: { 
       image: '',
       points: [],
-      patientCode: ''
+      patientCode: '',
+      rocfEvaluations: [],
     },
     mutations: {
       newImage(state, newImage) {
@@ -25,7 +26,10 @@ export default async function(/* { ssrContext } */) {
       },
       newPatientCode(state, newCode) {
         state.patientCode = newCode;
-      }
+      },
+      newRocfEvaluations(state, newRocfEvaluations) {
+        state.rocfEvaluations = newRocfEvaluations;
+      },
     },
     
     actions: {
@@ -60,6 +64,17 @@ export default async function(/* { ssrContext } */) {
         } else {
           console.log("not good, delete")
           commit("newPatientCode", '');
+        }
+      },
+      fetchNewRocfEvaluations({ commit }, rocfs) {
+        console.log("i received rocfs")
+        if (rocfs) {
+          console.log("good, commit")
+
+          commit("newRocfEvaluations", rocfs);
+        } else {
+          console.log("not good, delete")
+          commit("newRocfEvaluations", []);
         }
       },
     }
