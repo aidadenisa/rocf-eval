@@ -270,10 +270,11 @@ export default {
                         : this.imageSrc;
         data.gamma = 0.7;
         
-        let response = await api.put('/preprocessing', data )
+        let response = await api.post('/preprocessing', data )
         const image = response.image.replaceAll("'", "").slice(1);
         this.result = `data:image/png;base64,${image}`;
 
+        this.$store.dispatch('fetchPoints', data.points);
         this.$store.dispatch('fetchImage', this.result);
         this.$router.push('/evaluate/threshold');
     }

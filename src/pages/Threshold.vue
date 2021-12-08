@@ -20,8 +20,8 @@
     <q-btn @click.prevent="setupCanvas">Setup canvas</q-btn> 
     
     
-
-    <canvas id="canvasOutput" width="512" height="512"></canvas>
+    <q-btn @click.prevent="analyseImage">Analyse image </q-btn>
+    <!-- <canvas id="canvasOutput" width="512" height="512"></canvas> -->
     <!-- <img :src="result"/> -->
   </q-page>
 </template>
@@ -131,6 +131,22 @@ export default {
           console.log("CANNOT LOAD OPEN CV")
         });
       this.loading = false;
+    },
+    async analyseImage() {
+      let data = {};
+      const index = this.imageSrc.indexOf('data:image/png;base64,');
+      data.imageb64 = ( index > -1) 
+                      ? this.imageSrc.slice(('data:image/png;base64,').length)
+                      : this.imageSrc;
+      // data.threshold = this.threshold;
+      data.points = this.$store.state.points || [];
+      data.patientCode = this.$store.state.patientCode || '';
+      data.date = new Date();
+      let result = await api.put('/prediction', data);
+      // alert(result)
+      this.info = result;
+      localStorage.setItem('evaluationInProgressId', result._id);
+      this.$router.push('/');
     }
   },
   watch: {

@@ -3,7 +3,7 @@
     Please enter the code of the patient:
     <q-input v-model="code"></q-input>
     <router-link to="/evaluate/camera">
-        <q-btn color="primary">Take photo of ROCF ></q-btn>
+        <q-btn color="primary" @click.stop="savePatientCode">Take photo of ROCF ></q-btn>
     </router-link>
   </q-page>
 </template>
@@ -18,9 +18,9 @@ export default {
       }
   },
   methods: {
-    clickk() {
-      console.log("lol");
-    }
+    savePatientCode() {
+      this.$store.dispatch('fetchPatientCode', this.code);
+    },
   }
 }
 </script>

@@ -12,12 +12,20 @@ import { createStore } from 'vuex'
 export default async function(/* { ssrContext } */) {
   const Store = createStore({
     state: { 
-      image: ''
+      image: '',
+      points: [],
+      patientCode: ''
     },
     mutations: {
       newImage(state, newImage) {
         state.image = newImage;
       },
+      newPoints(state, newPoints) {
+        state.points = newPoints;
+      },
+      newPatientCode(state, newCode) {
+        state.patientCode = newCode;
+      }
     },
     
     actions: {
@@ -30,6 +38,28 @@ export default async function(/* { ssrContext } */) {
         } else {
           console.log("not good, delete")
           commit("newImage", '');
+        }
+      },
+      fetchPoints({ commit }, newPoints) {
+        console.log("i received new points")
+        if (newPoints) {
+          console.log("good, commit")
+
+          commit("newPoints", newPoints);
+        } else {
+          console.log("not good, delete")
+          commit("newPoints", []);
+        }
+      },
+      fetchPatientCode({ commit }, code) {
+        console.log("i received code")
+        if (code) {
+          console.log("good, commit")
+
+          commit("newPatientCode", code);
+        } else {
+          console.log("not good, delete")
+          commit("newPatientCode", '');
         }
       },
     }
