@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     savePatientCode() {
-      this.$store.dispatch('fetchPatientCode', this.code);
+      this.$store.dispatch('fetchPatientCode', this.code.toUpperCase());
     },
     setFocusedMode() {
       this.focused = true;

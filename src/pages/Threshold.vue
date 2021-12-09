@@ -1,34 +1,39 @@
 <template>
-  <q-page >
-      
-    Please set the threshold: <br>
-    {{info}} {{threshold}} {{loading}}
-    <br/>
-     <q-slider v-model="threshold" :min="minThreshold" :max="maxThreshold"/>
-    <br/>
-    <label for="threshold">Threshold</label>
-
+  <q-page class="flex column justify-between">
+    <subpage-heading :subtitle="'New ROCF Evaluation'" :title="'Move the threshold to better extract the drawing'"></subpage-heading>
+    <!-- {{info}} {{threshold}} {{loading}} -->
+    
     <div class="canvas-container">
       <canvas id="overlay" ref="canvas"></canvas>
     </div>
-    <q-btn @click.prevent="updateThresholdValue">Update threshold value</q-btn> 
-    <br>
-    <router-link to="/evaluate/camera">
-      <q-btn>back</q-btn>
-    </router-link>
+    
+    <q-slider
+      v-model="threshold"
+      :min="minThreshold"
+      :max="maxThreshold"
+      :step="1"
+      label
+      label-always
+      color="primary"
+    ></q-slider>
+    
+    <div class="take-picture-btn">
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="analyseImage">Analyse the drawing</rocf-button>
+    </div>
 
-    <q-btn @click.prevent="setupCanvas">Setup canvas</q-btn> 
-    
-    
-    <q-btn @click.prevent="analyseImage">Analyse image </q-btn>
+    <!-- <q-btn @click.prevent="updateThresholdValue">Update threshold value</q-btn>  -->
+    <!-- <q-btn @click.prevent="analyseImage">Analyse image </q-btn> -->
+
+    <!-- <q-btn @click.prevent="setupCanvas">Setup canvas</q-btn>  -->
     <!-- <canvas id="canvasOutput" width="512" height="512"></canvas> -->
-    <!-- <img :src="result"/> -->
   </q-page>
 </template>
 
 <script>
 import api from '../services/api';
 import imageProcess from '../services/imgProcessing';
+import SubpageHeading from '../components/SubpageHeading.vue';
+import RocfButton from '../components/ROCFButton.vue'
 
 export default {
   name: 'Camera',
@@ -62,9 +67,15 @@ export default {
       loading: true,
     }
   },
-  async mounted() {
+  components: {
+    SubpageHeading,
+    RocfButton
+  },
+  async beforeMount() {
     this.imageSrc = this.$store.state.image;
     await this.waitForOpenCVToBeLoaded();
+  },
+  mounted() {
     this.setupCanvas();
   },
   methods: {
@@ -140,7 +151,7 @@ export default {
                       : this.imageSrc;
       // data.threshold = this.threshold;
       data.points = this.$store.state.points || [];
-      data.patientCode = this.$store.state.patientCode || '';
+      data.patientCode = this.$store.state.patientCode.toUpperCase() || '';
       data.date = new Date();
       let result = await api.put('/prediction', data);
       // alert(result)

@@ -1,22 +1,31 @@
 <template>
-  <q-page >
-    Please set the points on the image as in the example below: 
+  <q-page class="flex column justify-between" >
+    <div class="page-content">
+      <subpage-heading 
+        :title="'Do you want to use this photo?'"
+        :subtitle="'Adjust photo by zooming or dragging'">
+      </subpage-heading>
 
-    <div ref="editor" class="image-editor">
-      <img ref="image" v-if="imageSrc" :src="imageSrc" >
+      <div ref="editor" class="image-editor">
+        <img ref="image" v-if="imageSrc" :src="imageSrc" >
+      </div>
+
+      <div class="loader" v-if="loading">
+        <p>loading...</p>
+      </div>
     </div>
-
-    <q-btn @click="saveImage">Use Image </q-btn>
-
-    <div class="loader" v-if="loading">
-      <p>loading...</p>
+    <div class="use-picture-btn ">
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="saveImage">
+        Yes, use this photo
+      </rocf-button>
     </div>
-    
 
   </q-page>
 </template>
 
 <script>
+import SubpageHeading from '../components/SubpageHeading.vue'
+import RocfButton from '../components/ROCFButton.vue'
 
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
@@ -34,10 +43,14 @@ export default {
       loading: true
     }
   },
-  mounted() {
-
+  components: {
+    SubpageHeading,
+    RocfButton
+  },
+  beforeMount() {
     this.imageSrc = this.$store.state.image;
-
+  },
+  mounted() {
     this.crop(this.imageSrc).then(image => {
       this.imageSrc  = image;
       this.getImageDimensions(this.imageSrc);
@@ -46,7 +59,6 @@ export default {
       console.log("setupCropper")
 
     });
-
   },
 
   methods: {
@@ -91,8 +103,11 @@ export default {
           // get the aspect ratio of the input image
           // const inputImageAspectRatio = inputWidth / inputHeight;
 
-          // get half of the height
-          const outputHeight = inputHeight / 2;
+          // get half of the height if the image is portrait
+          
+          const outputHeight = inputImage.naturalWidth < inputImage.naturalHeight 
+                                ? inputHeight / 2
+                                : inputHeight;
 
           // calculate the position to draw the image at
           const outputX = 0.0;

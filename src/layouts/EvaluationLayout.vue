@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" style="min-height:initial;">
+  <q-layout view="lHh Lpr lFf">
     <secondary-header></secondary-header>
     <q-page-container ref="pageC">
       <router-view />
@@ -27,6 +27,5 @@ export default {
 <style scoped>
 .q-page {
   height: 100%;
-  padding-top: var(--rocf-content-margin-y);
 }
 </style>

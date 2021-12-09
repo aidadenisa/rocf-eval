@@ -1,20 +1,22 @@
 <template>
-  <q-page class="flex">
-    Please take a photo of the patient's drawing, similar to the example below:        
+  <q-page class="camera-page flex column justify-between">
+    <subpage-heading :subtitle="'Take a photo with the patient’s drawing, as in the example below'"></subpage-heading>
 
-    <div style="position:absolute; bottom:0">
-      <q-btn v-if="!imageSrc" @click="takePicture()">Take picture</q-btn>
-      <q-btn @click="hide()">hide cam</q-btn>
+    <div class="take-picture-btn">
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="takePicture">Take a picture</rocf-button>
     </div>
 
   </q-page>
 </template>
 
 <script>
+import SubpageHeading from '../components/SubpageHeading.vue';
+import RocfButton from '../components/ROCFButton.vue'
 
 import { useStore } from 'vuex'
 
 export default {
+  components: { SubpageHeading, RocfButton },
   name: 'Camera',
   data() {
     return {
@@ -24,7 +26,7 @@ export default {
       paperRatio: 148.5 / 210
     }
   },
-  mounted() {
+  beforeMount() {
     let options = {
       x: 0,
       y: (0.5 * window.screen.height - this.cameraOptionsBarHeight),
@@ -75,6 +77,9 @@ export default {
 
       i.src = imageSrc; 
     }
+  },
+  beforeUnmount() {
+    CameraPreview.stopCamera();
   }
 }
 </script>

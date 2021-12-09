@@ -1,24 +1,33 @@
 <template>
-  <q-page >
+  <q-page class="flex column justify-between">
       
-    Please set the 5 refference points: <br>
-    {{info}}
+    <subpage-heading :title="'Please set the 5 reference points'"></subpage-heading>
+
+    <div class="flex row justify-end">
+        <q-btn flat style="background: #D2E1FF; color: #0857DE" class="reset-points-btn" @click="resetPoints">Reset points</q-btn>
+    </div>
     <div class="canvas-container">
         <canvas id="overlay"></canvas>
     </div>
-    <q-btn @click="resetPoints">Reset Points</q-btn> 
-    <br>
-    <q-btn @click="savePoints">Save Points</q-btn>
 
-    <img :src="result"/>
+    <div class="save-points-btn">
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="savePoints">Extract Drawing</rocf-button>
+    </div>
+
   </q-page>
 </template>
 
 <script>
 import api from '../services/api';
+import SubpageHeading from '../components/SubpageHeading.vue';
+import RocfButton from '../components/ROCFButton.vue';
 
 export default {
   name: 'Camera',
+  components: {
+    SubpageHeading,
+    RocfButton
+  },
   data() {
     return {
       info:'', 
@@ -45,8 +54,10 @@ export default {
       result: ''
     }
   },
-  mounted() {
+  beforeMount() {
     this.imageSrc = this.$store.state.image;
+  },
+  mounted() {
     this.setupCanvas();
   },
   methods: {
@@ -59,7 +70,7 @@ export default {
         this.baseImage.src = this.imageSrc ;
 
         this.canvas.width = window.screen.width * window.devicePixelRatio;
-        this.canvas.height = 0.7 * window.screen.height * window.devicePixelRatio;
+        this.canvas.height = 0.6 * window.screen.height * window.devicePixelRatio;
 
         console.log("canvas dim: ", this.canvas.width, this.canvas.height)
 
@@ -195,7 +206,8 @@ export default {
             return;
         }
 
-        let scale = this.baseImage.width / this.canvas.width; 
+        //find the scale between the actual length of the canvas and the visible length of the canvas
+        let scale = this.canvas.width / this.canvas.clientWidth;
         
         let point = {
             x: event.layerX * scale,

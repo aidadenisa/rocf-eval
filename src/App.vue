@@ -15,11 +15,9 @@ body {
   --constant-safe: constant(safe-area-inset-top);
   --env-safe: env(safe-area-inset-top);
   background-color: var(--rocf-secondary);
-  padding-top: constant(safe-area-inset-top);
-  padding-top: env(safe-area-inset-top);
+  padding: 0 var(--rocf-page-padding);
   font-family: 'Noto';
   color: var(--rocf-text-color);
-  padding: 0 var(--rocf-page-padding);
 }
 
 a {
@@ -39,10 +37,8 @@ h2, h3 {
   line-height: 2rem;
 }
 
-.q-layout {
-  height: calc(100vh - var(--constant-safe) - 6px);
-  height: calc(100vh - var(--env-safe) - 6px);
+#q-app {
+  margin-top: 1px;
 }
-
 </style>
 

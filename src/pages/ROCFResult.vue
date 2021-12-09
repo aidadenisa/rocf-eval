@@ -25,7 +25,7 @@
 
     <div class="save-revision" v-if="revised">
       <q-page-sticky expand position="bottom" class="flex column justify-center">
-        <rocf-button @click="saveRevision">Save revision</rocf-button>
+        <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="saveRevision">Save revision</rocf-button>
       </q-page-sticky>
     </div>
   </q-page>

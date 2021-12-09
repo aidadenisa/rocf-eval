@@ -36,7 +36,7 @@ export default {
       diagnosis: '',
     };
   },
-  mounted() {
+  beforeMount() {
     this.diagnosis = utils.getDiagnosisFromScore(this.score);
   }
 }
