@@ -1,9 +1,6 @@
 <template>
   <q-page :class="['flex','column', {'justify-between': !focused }, {'justify-center': focused }]"> 
-    <div class="heading">
-      <div class="subtitle">New ROCF Evaluation</div>
-      <h2 class="title"> Please provide the patient’s code </h2>
-    </div>
+    <subpage-heading subtitle="New ROCF Evaluation" title="Please provide the patient's code"></subpage-heading>
     <div class="input-box">
       <input v-model="code" class="code-input" @focus="setFocusedMode" @blur="unsetFocusedMode">
     </div>
@@ -14,6 +11,7 @@
 </template>
 
 <script>
+import SubpageHeading from '../components/SubpageHeading.vue';
 import RocfButton from '../components/ROCFButton.vue'
 export default {
   name: 'Camera',
@@ -24,7 +22,8 @@ export default {
       }
   },
   components: {
-    RocfButton
+    RocfButton,
+    SubpageHeading
   },
   methods: {
     savePatientCode() {
@@ -41,9 +40,6 @@ export default {
 </script>
 
 <style scoped>
-.heading {
-  margin-top: calc(2 * var(--rocf-content-margin-x));
-}
 .code-input {
   font-size: 24px;
   color: var(--rocf-primary);
@@ -57,15 +53,6 @@ export default {
 }
 .input-box {
   box-shadow: var(--rocf-card-shadow);
-}
-
-.subtitle {
-  color: var(--rocf-text-color-gray);
-  font-size: 18px;
-}
-.title {
-  font-weight: 600;
-  margin-top: calc(0.5 * var(--rocf-content-margin-x));
 }
 
 .q-page:not(.justify-between) .code-input {

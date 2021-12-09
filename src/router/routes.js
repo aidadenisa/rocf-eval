@@ -16,6 +16,7 @@ const routes = [
       { path: 'adjust-photo', component: () => import('src/pages/AdjustPhoto.vue') },
       { path: 'set-points', component: () => import('src/pages/SetPoints.vue') },
       { path: 'threshold', component: () => import('src/pages/Threshold.vue') },
+      { path: 'rocf/:id', component: () => import('src/pages/ROCFResult.vue') },
     ]
   },
 

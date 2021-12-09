@@ -21,25 +21,12 @@ export default {
   components: {
     SecondaryHeader
   },
-  methods: {
-    updatePageSize() {
-      if(!this.$refs.pageC) return;
-      const pageContainer = this.$el.getElementsByClassName('q-page-container')[0];
-      const pageRect = pageContainer.getBoundingClientRect();
-      pageContainer.style.height = `calc( 100vh - ${pageRect.top}px`;
-    }
-  },
-  beforeMount() {
-    this.updatePageSize();
-  },
-  mounted() {
-    this.updatePageSize();
-  },
 }
 </script>
 
 <style scoped>
 .q-page {
   height: 100%;
+  padding-top: var(--rocf-content-margin-y);
 }
 </style>

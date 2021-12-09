@@ -1,5 +1,5 @@
 <template>
-  <q-header class="secondary-header" reveal>
+  <q-header class="secondary-header" >
     <div class="back-button" @click.stop="handleBackButton">
       <q-icon name="arrow_back_ios" class="back-icon"></q-icon>
       <span class="back-label">Back</span>
@@ -27,9 +27,9 @@ export default {
 <style scoped>
 .secondary-header {
   color: var(--rocf-text-color);
-  margin-top: 26px;
   padding: var(--rocf-page-padding);
-  background: transparent;
+  background: var(--rocf-secondary);
+  padding-top: 46px;
 }
 .back-icon {
   font-size: 22px;

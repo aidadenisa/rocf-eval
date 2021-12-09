@@ -40,6 +40,7 @@ export default {
     checkIfEvaluationInProgress() {
       let evaluationInProgressId = localStorage.getItem('evaluationInProgressId');
       if(evaluationInProgressId) {
+        alert("We are analysing a ROCF... It should be ready in a few minutes!");
         this.setIntervalForRetrievingResults(evaluationInProgressId);
       }
     },
@@ -47,10 +48,12 @@ export default {
       const retrieveResultsInterval = setInterval(async () => {
         let result = await api.get('/rocf/' + evaluationInProgressId);
         // this.info = "checking...."
-        if(result.predictionTotalScores) {
-          this.results = result.predictionTotalScores;
+        if(result.scores) {
+          this.results = result.scores;
           localStorage.removeItem('evaluationInProgressId');
-          clearInterval(retrieveResultsInterval)
+          clearInterval(retrieveResultsInterval);
+          this.$store.dispatch('fetchNewRocfToArray', result);
+          alert(`The ROCF for patient ${result.patientCode} is ready!`);
         }
       }, 15000);
     },
@@ -61,12 +64,12 @@ export default {
       this.$store.dispatch('fetchNewRocfEvaluations', this.rocfs);
     }
   },
-  async mounted() {
-    this.checkIfEvaluationInProgress();
+  async beforeMount() {
     await this.getLastROCFs();
   },
-  beforeMount() {
+  mounted() {
     this.rocfs = this.$store.state.rocfEvaluations;
+    this.checkIfEvaluationInProgress();
   },
 }
 </script>
@@ -74,7 +77,7 @@ export default {
 <style scoped>
 .rocf-header {
   margin-top: 40px;
-  margin-bottom: var(--rocf-content-margin-x);
+  margin-bottom: var(--rocf-content-margin-y);
 }
 .rocf-header .greeting {
   font-size: 18px;
@@ -86,10 +89,10 @@ export default {
 }
 
 .rocf-evaluations {
-  margin-top: calc(2 * var(--rocf-content-margin-x));
+  margin-top: calc(2 * var(--rocf-content-margin-y));
 }
 .rocf-evaluations h3 {
   font-weight: 600;
-  margin-bottom: calc(0.5 * var(--rocf-content-margin-x));
+  margin-bottom: calc(0.5 * var(--rocf-content-margin-y));
 }
 </style>

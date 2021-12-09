@@ -17,6 +17,11 @@ export default async function(/* { ssrContext } */) {
       patientCode: '',
       rocfEvaluations: [],
     },
+    getters: {
+      getROCF: (state) => (id) => {
+        return state.rocfEvaluations.find(rocf => rocf._id === id);
+      },
+    },
     mutations: {
       newImage(state, newImage) {
         state.image = newImage;
@@ -29,6 +34,10 @@ export default async function(/* { ssrContext } */) {
       },
       newRocfEvaluations(state, newRocfEvaluations) {
         state.rocfEvaluations = newRocfEvaluations;
+      },
+      newRocfToArray(state, newROCF) {
+        const index = state.rocfEvaluations.map(rocf => rocf._id).indexOf(newROCF._id);
+        state.rocfEvaluations[index] = newROCF;
       },
     },
     
@@ -75,6 +84,17 @@ export default async function(/* { ssrContext } */) {
         } else {
           console.log("not good, delete")
           commit("newRocfEvaluations", []);
+        }
+      },
+      fetchNewRocfToArray({ commit }, rocf) {
+        console.log("i received rocf")
+        if (rocf) {
+          console.log("good, commit")
+
+          commit("newRocfToArray", rocf);
+        } else {
+          console.log("not good, delete")
+          // commit("newRocfToArray", []);
         }
       },
     }

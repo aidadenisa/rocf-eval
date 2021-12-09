@@ -7,9 +7,10 @@
   --rocf-normal-dark: #009922;
   --rocf-dementia: #FFE3E3;
   --rocf-dementia-dark: #FF2323;
+  --rocf-misplaced: #CA32FF;
   --rocf-text-color: #2B2B2B;
   --rocf-text-color-gray: #878787;
-  --rocf-content-margin-x: 16px;
+  --rocf-content-margin-y: 16px;
   --rocf-card-padding: 16px;
   --rocf-card-radius: 8px;
   --rocf-page-padding: 20px;
