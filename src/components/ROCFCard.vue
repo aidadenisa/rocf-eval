@@ -38,6 +38,9 @@ export default {
   },
   beforeMount() {
     this.diagnosis = utils.getDiagnosisFromScore(this.score);
+  },
+  beforeUpdate() {
+    this.diagnosis = utils.getDiagnosisFromScore(this.score);
   }
 }
 
