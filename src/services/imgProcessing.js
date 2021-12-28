@@ -119,6 +119,14 @@ const imgProcess = {
         // contours, hierarchy = cv2.findContours(thresh.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         return dst;
     },
+    getAdaptiveThreshold: (imageMatrix, blockSize, constant) => {
+        let src = imageMatrix.get(0);
+        let gray = new cv.Mat();
+        cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY, 0);
+        
+        cv.adaptiveThreshold(src, gray, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, blockSize, constant)
+        return gray;
+    },
     isOpenCVLoaded: async () => {
         return new Promise((resolve, reject) => {
             if (cv.getBuildInformation) {

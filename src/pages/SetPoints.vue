@@ -287,7 +287,7 @@ export default {
         this.result = `data:image/png;base64,${image}`;
 
         this.$store.dispatch('fetchPoints', data.points);
-        this.$store.dispatch('fetchImage', this.result);
+        this.$store.dispatch('fetchGammaImage', this.result);
         this.$router.push('/evaluate/threshold');
     }
   }

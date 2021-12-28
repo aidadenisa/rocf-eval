@@ -16,6 +16,7 @@ export default async function(/* { ssrContext } */) {
       points: [],
       patientCode: '',
       rocfEvaluations: [],
+      gammaImage: '',
     },
     getters: {
       getROCF: (state) => (id) => {
@@ -25,6 +26,9 @@ export default async function(/* { ssrContext } */) {
     mutations: {
       newImage(state, newImage) {
         state.image = newImage;
+      },
+      newGammaImage(state, newGammaImage) {
+        state.gammaImage = newGammaImage;
       },
       newPoints(state, newPoints) {
         state.points = newPoints;
@@ -51,6 +55,17 @@ export default async function(/* { ssrContext } */) {
         } else {
           console.log("not good, delete")
           commit("newImage", '');
+        }
+      },
+      fetchGammaImage({ commit }, newImage) {
+        console.log("i received a new gamma image")
+        if (newImage) {
+          console.log("good, commit")
+
+          commit("newGammaImage", newImage);
+        } else {
+          console.log("not good, delete")
+          commit("newGammaImage", '');
         }
       },
       fetchPoints({ commit }, newPoints) {
