@@ -30,7 +30,9 @@ const api = {
             let result = await fetch(VUE_APP_API_LINK + path, {
                 "method": "PUT",
                 "headers": {
-                    'Content-Type': 'application/json'                },
+                    'Content-Type': 'application/json'
+                },
+                "crossDomain": true,
                 body: JSON.stringify(data)
             }).then(response => response.json());
             return result;

@@ -6,10 +6,14 @@
       <img :src="imageSrc">
     </div>
 
+    <div class="flex row justify-between">
+      <label>Less details</label>
+      <label>More details</label>
+    </div>
     <q-slider
       @change="changeImage"
       v-model="ATblockSize"
-      :min="1"
+      :min="3"
       :max="69"
       :step="2"
       label
@@ -17,6 +21,10 @@
       color="primary"
     ></q-slider>
 
+    <div class="flex row justify-between">
+      <label>Darker</label>
+      <label>Lighter</label>
+    </div>
     <q-slider
       @change="changeImage"
       v-model="ATconstant"
@@ -86,13 +94,15 @@ export default {
       data.imageb64 = ( index > -1) 
                       ? originalImage.slice(('data:image/png;base64,').length)
                       : originalImage;
-      data.threshold = this.threshold;
       data.gamma = 0.7;
       data.medium = "photo";
       data.points = this.$store.state.points || [];
       data.patientCode = this.$store.state.patientCode.toUpperCase() || '';
       data.date = new Date();
-      let result = await api.post('/prediction', data);
+      data.adaptiveThresholdC = this.ATconstant;
+      data.adaptiveThresholdBS = this.ATblockSize;
+
+      let result = await api.put('/prediction', data);
       // alert(result)
       this.info = result;
       localStorage.setItem('evaluationInProgressId', result._id);
