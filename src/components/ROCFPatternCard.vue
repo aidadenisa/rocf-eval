@@ -11,7 +11,16 @@
         </div>
       </div>
       <div class="content">
-        <!-- {{pattern}} -->
+        
+        <div class="roi-visualization">
+          <div class="original">
+            <img :src="originalPatternURL">
+          </div>
+          <div class="pattern-found">
+            <!-- <roi-visualization :roi="pattern.roi" :homography="pattern.homographyURL"></roi-visualization> -->
+            <roi-visualization></roi-visualization>
+          </div>
+        </div>
         <div class="score-box">
           <div class="section-title">Score:</div>
           <q-slider
@@ -37,6 +46,8 @@
 <script>
 import utils from '../services/utils.js'
 import GCard from './GCard.vue'
+import RoiVisualization from './ROIVisualization.vue'
+
 export default {
   props: {
     pattern: {
@@ -61,7 +72,8 @@ export default {
     }
   },
   components: {
-    GCard
+    GCard,
+    RoiVisualization
   },
   computed: {
     indexPretty(){
@@ -70,9 +82,10 @@ export default {
     label() {
       return utils.getLabelFromScore(this.pattern);
     },
-    // chosenLabelPretty() {
-    //   return utils.getLabelFromScore(this.chosenLabel);
-    // }
+    originalPatternURL() {
+      // return require(`../assets/img/patterns/P${this.index + 1}.png`);
+      return require(`../assets/img/patterns/P1.png`);
+    }
   },
   methods: {
     setRevisedPattern() {
@@ -164,5 +177,8 @@ export default {
 .new-label.label-correct {
   color: white;
   background-color: var(--rocf-normal-dark);
+}
+.roi-visualization .original img {
+  width: 100%;
 }
 </style>
