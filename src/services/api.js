@@ -38,6 +38,14 @@ const api = {
             return result;
 
         },
+        getImage: async (path) => {
+            let response = await fetch(VUE_APP_API_LINK + path, {
+                "method": "GET",
+                "crossDomain": true,
+            })
+            let result = await response.blob();
+            return result;
+        },
     }
 // });
 

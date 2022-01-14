@@ -17,8 +17,7 @@
             <img :src="originalPatternURL">
           </div>
           <div class="pattern-found">
-            <!-- <roi-visualization :roi="pattern.roi" :homography="pattern.homographyURL"></roi-visualization> -->
-            <roi-visualization></roi-visualization>
+            <roi-visualization :roi="pattern.roi" :homographyURL="homographyURL"></roi-visualization>
           </div>
         </div>
         <div class="score-box">
@@ -55,6 +54,9 @@ export default {
     },
     index: {
       type: Number
+    }, 
+    homographyURL: {
+      type: String
     }
   },
   data() {

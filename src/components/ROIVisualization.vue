@@ -1,11 +1,13 @@
 <template>
   <div class="roi-canvas">
-    <canvas></canvas>
+    <img :src="homographyURL">
+    <canvas ref="roi"></canvas>
   </div>
 </template>
 
 
 <script>
+import api from '../services/api.js';
 
 export default {
   data() {
@@ -14,21 +16,17 @@ export default {
       canvas: {},
       context: {},
       baseImage: null,
-      ratio: 1
+      ratio: 1,
     };
   },
   props: {
     roi: {
       type: Array,
-      default: () => [[100, 50], [500, 50], [500, 300], [100, 300]]
+      default: () => [[[100, 50], [500, 50], [500, 300], [100, 300]]]
     },
     homographyURL: {
       type: String,
-      default: '/test/RC002.png'
     }
-  },
-  mounted() {
-    this.setupCanvas();
   },
   methods: {
     setupCanvas() {
@@ -37,32 +35,41 @@ export default {
       this.context.imageSmoothingEnabled = false;
 
       this.baseImage = new Image();
-      this.baseImage.onload = () => {
-            this.drawImage();
-      }
       this.baseImage.src = this.homographyURL;
 
       this.canvas.width = window.screen.width * window.devicePixelRatio;
       this.canvas.height = 400;
 
-      this.ratio = this.canvas.width / this.baseImage.width
+      this.ratio = this.canvas.width / this.baseImage.width;
+
+      this.drawImage();
       
     },
     drawImage() {
-      
-      this.canvas.height = this.baseImage.height * this.ratio
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.context.drawImage(this.baseImage, 0, 0, this.baseImage.width * this.ratio, this.baseImage.height * this.ratio);
 
-      this.context.strokeStyle = '#f00';
-      this.context.beginPath();
-      this.context.moveTo(this.roi[0][0], this.roi[0][1]);
-      this.context.lineTo(this.roi[1][0], this.roi[1][1]);
-      this.context.lineTo(this.roi[2][0], this.roi[2][1]);
-      this.context.lineTo(this.roi[3][0], this.roi[3][1]);
-      this.context.closePath();
-      this.context.lineWidth = 3;
-      this.context.stroke();
+      // this.canvas.height = this.baseImage.height ? this.baseImage.height * this.ratio : 400;
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      for(let r=0; r < this.roi.length; r++) {
+        this.context.strokeStyle = '#f00';
+        this.context.beginPath();
+        this.context.moveTo(this.roi[r][0][0] * this.ratio, this.roi[r][0][1] * this.ratio);
+        for(let i=1; i<this.roi[r].length; i++) {
+          this.context.lineTo(this.roi[r][i][0] * this.ratio, this.roi[r][i][1] * this.ratio);
+        }
+        this.context.closePath();
+        this.context.lineWidth = 3;
+        this.context.stroke();
+      }  
+      
+    },
+  },
+  watch: {
+    homographyURL() {
+      setTimeout(()=>{
+        this.setupCanvas();
+      }, 500)
+      
     }
   }
 }
@@ -70,7 +77,18 @@ export default {
 </script>
 
 <style scoped>
-canvas {
+.roi-canvas {
+  position: relative;
+}
+.roi-canvas canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+canvas, 
+img {
   width:100%;
 }
 </style>

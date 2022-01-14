@@ -19,6 +19,7 @@
         :key="index"
         :pattern="pattern"
         :index="index"
+        :homographyURL="homographyURL"
         @newConfig="saveNewScoreForPattern"
       ></rocf-pattern>
     </div>
@@ -53,6 +54,7 @@ export default {
       revised: false,
       labels: ['omitted', 'distorted', 'misplaced', 'correct'],
       showSaveDialog: false,
+      homographyURL: '',
     };
   },
   computed: {
@@ -61,6 +63,14 @@ export default {
     },
   },
   methods: {
+    async getThreshedImage() {
+      let result = await api.getImage(`/files/xxxxxx3/${this.rocf.imageName}.png`);
+      let baseImage = new Image();
+      baseImage.onload = () => {
+        this.homographyURL = window.URL.createObjectURL(result);
+      }
+      baseImage.src = window.URL.createObjectURL(result);
+    },
     saveNewScoreForPattern(index, newPatternConfig) {
       this.rocf.revisedScores[index].revisedScore = newPatternConfig.chosenScore;
       this.rocf.revisedScores[index].revisedLabel = newPatternConfig.chosenLabel;
@@ -95,9 +105,10 @@ export default {
       this.revised = false;
     }
   },
-  beforeMount() {
+  async beforeMount() {
     this.rocf = this.$store.getters.getROCF(this.$route.params.id);
     this.rocf.revisedScores = this.createCloneOfScores();
+    await this.getThreshedImage();
   }
 }
 
