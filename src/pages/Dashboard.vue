@@ -13,7 +13,11 @@
     <div class="rocf-evaluations">
       <h3> Previous ROCF Evaluations </h3>
 
-      <rocf-list :rocfs="rocfs"></rocf-list>
+      <rocf-list v-if="rocfs.length" :rocfs="rocfs"></rocf-list>
+      <div v-else class="empty-list-rocfs">
+        <br>
+        <h3>There are no ROCFs evaluations yet.</h3>
+      </div>
     </div>
   </q-page>
 </template>
@@ -94,5 +98,9 @@ export default {
 .rocf-evaluations h3 {
   font-weight: 600;
   margin-bottom: calc(0.5 * var(--rocf-content-margin-y));
+}
+
+.empty-list-rocfs h3 {
+  color: #adadad;
 }
 </style>
