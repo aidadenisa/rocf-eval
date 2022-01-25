@@ -85,8 +85,7 @@ export default {
       return utils.getLabelFromScore(this.pattern);
     },
     originalPatternURL() {
-      // return require(`../assets/img/patterns/P${this.index + 1}.png`);
-      return require(`../assets/img/patterns/P1.png`);
+      return require(`../assets/img/patterns/P${this.index + 1}.png`);
     }
   },
   methods: {

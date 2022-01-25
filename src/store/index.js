@@ -17,6 +17,7 @@ export default async function(/* { ssrContext } */) {
       patientCode: '',
       rocfEvaluations: [],
       gammaImage: '',
+      user: {}
     },
     getters: {
       getROCF: (state) => (id) => {
@@ -43,6 +44,9 @@ export default async function(/* { ssrContext } */) {
         const index = state.rocfEvaluations.map(rocf => rocf._id).indexOf(newROCF._id);
         state.rocfEvaluations[index] = newROCF;
       },
+      newUser(state, userInfo) {
+        state.user = userInfo;
+      }
     },
     
     actions: {
@@ -110,6 +114,17 @@ export default async function(/* { ssrContext } */) {
         } else {
           console.log("not good, delete")
           // commit("newRocfToArray", []);
+        }
+      },
+      fetchNewUserInfo({ commit }, userInfo) {
+        console.log("i received userInfo")
+        if (userInfo) {
+          console.log("good, commit")
+
+          commit("newUser", userInfo);
+        } else {
+          console.log("not good, delete")
+          commit("newUser", {});
         }
       },
     }

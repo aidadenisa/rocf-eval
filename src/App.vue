@@ -3,10 +3,23 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
-
+import jwt_decode from "jwt-decode";
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+  beforeMount() {
+    this.getLoggedInUserInfo();
+  },
+  methods: {
+    getLoggedInUserInfo() {
+      const token = localStorage.getItem('token');
+
+      if(token) {
+        const userInfo = jwt_decode(token);
+        this.$store.dispatch('fetchNewUserInfo', userInfo);
+      }
+    }
+  }
 })
 </script>
 

@@ -23,10 +23,17 @@
       </div>
       <div class="field flex column">
         <div class="input-wrapper">
-          <input id="pass2" v-model="pass2" placeholder="Repeat password" required>
+          <input type="password" id="pass2" v-model="pass2" placeholder="Repeat password" required>
         </div>
       </div>
-      <rocf-button type="password" class="submit-button" @click="registerNewAccount">Create new account</rocf-button>
+
+      <div class="register-link">
+        <router-link to="/login">
+          You already have an account? Login here!
+        </router-link>
+      </div>
+
+      <rocf-button class="submit-button" @click="registerNewAccount">Create new account</rocf-button>
 
     </div>
   </q-page>
@@ -73,7 +80,8 @@ export default {
 
       if(result && result.token) {
         localStorage.setItem('token', result.token);
-        this.$router.push('/main');
+        this.$store.dispatch('fetchNewUserInfo', result);
+        this.$router.push('/');
       }
 
     }
@@ -133,5 +141,13 @@ label {
 
 ::placeholder {
   color: #303030;
+}
+
+.register-link {
+  margin: 10px 0 30px 0;
+}
+.register-link a {
+  color: var(--rocf-primary);
+  padding: 10px 0 30px 0;
 }
 </style>

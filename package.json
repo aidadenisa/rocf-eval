@@ -15,6 +15,7 @@
     "cropperjs": "^1.5.12",
     "crypto": "^1.0.1",
     "fs": "^0.0.1-security",
+    "jwt-decode": "^3.1.2",
     "opencv.js": "^1.2.1",
     "pinch-zoom-js": "^2.3.4",
     "quasar": "^2.0.0",

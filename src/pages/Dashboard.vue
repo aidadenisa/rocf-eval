@@ -2,7 +2,7 @@
   <q-page class="flex column flex-start">  
     <div class="rocf-header">
       <h3 class="greeting">Good Morning,</h3>
-      <h2 class="doctor-name">Dr. Rossi</h2>
+      <h2 class="doctor-name">Dr. {{user.name}}</h2>
     </div>
     <router-link to="/evaluate/patient">
       <new-rocf></new-rocf>
@@ -33,7 +33,8 @@ export default {
     return {
       results: null,
       info: '',
-      rocfs: []
+      rocfs: [],
+      user: null,
     };
   },
   components: {
@@ -69,6 +70,7 @@ export default {
     }
   },
   async beforeMount() {
+    this.user = this.$store.state.user;
     await this.getLastROCFs();
   },
   mounted() {
