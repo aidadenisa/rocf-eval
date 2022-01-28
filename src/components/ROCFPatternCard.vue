@@ -5,7 +5,7 @@
         <div class="title">
           Pattern {{indexPretty}}
         </div>
-        <div :class="['label', 'label-' + revisedPattern.chosenLabel]" @click="toggleEditMode">
+        <div :class="['label', 'label-' + revisedPattern.chosenLabel]" @click.prevent="toggleEditMode">
           <q-icon name="edit" class="edit-icon"></q-icon>
           {{revisedPattern.chosenLabel}}
         </div>
@@ -98,6 +98,12 @@ export default {
     },
     toggleEditMode() {
       this.editMode = !this.editMode;
+      setTimeout(() => {
+        if(this.editMode) {
+          this.$el.querySelector('.edit-mode-labels').scrollIntoView({ block: 'center'} );
+        }
+      }, 100)
+      
     },
     setChosenLabel(newPatternLabel) {
       this.revisedPattern.chosenLabel = this.labels[newPatternLabel];
@@ -160,8 +166,9 @@ export default {
   flex-wrap: nowrap;
 }
 .new-label {
-  padding: 6px;
+  padding: 16px 6px;
   border-radius: var(--rocf-card-radius);
+  font-weight: 600;
 }
 .new-label.label-omitted {
   color: white;
