@@ -3,11 +3,28 @@
     <subpage-heading title="ROCF Patterns evaluation complete" subtitle="New ROCF Evaluation"></subpage-heading>
     <div class="total-result">
       <g-card class="result-box flex row">
-        <div class="label-box col-6">
-          Result: 
+        <div class="score-box col-3">
+          <div class="card-title"> Score </div>
+          <div class="score">{{score}}</div>
         </div>
-        <div class="score-box col-6">
-          {{score}}
+        <div class="diagnosis-box col-9 flex column items-center" v-if="rocf.diagnosis">
+          <div class="card-title"> Prediction </div>
+          <table class="chart">
+            <tr 
+              v-for="(prob, index) in rocf.diagnosis.probabilities" 
+              :key="index" 
+              :class="[label(index), 'diagnosis', {'predicted-diagnosis': index == rocf.diagnosis.labelNumber}]"
+            >
+              <td class="label"> {{label(index)}}</td>
+              <td class="progress">
+                <div class="total-progress-bar">
+                  <div class="actual-progress-bar" :style="`width: ${setWidthFromProbability(prob)}`">
+                  </div>
+                </div>
+              </td>
+              <td class="probability"> {{parseFloat(prob.toString()).toFixed(2)}} </td>
+            </tr>
+          </table>
         </div>
       </g-card>
     </div>
@@ -107,6 +124,19 @@ export default {
       console.log(result);
       alert("The ROCF evaluation was saved successfully!");
       this.revised = false;
+    },
+    label(index) {
+      if(index == 0) {
+        return 'Normal';
+      } else if (index == 1) {
+        return 'MCI';
+      } else {
+        return 'Dementia';
+      }
+    },
+    setWidthFromProbability(prob) {
+      let progress = parseFloat(prob).toFixed(2) * 100;
+      return progress + '%';
     }
   },
   async beforeMount() {
@@ -134,26 +164,79 @@ export default {
 .label-box {
   color: var(--rocf-primary);
 }
-.score-box {
-  text-align: center;
-  background-color: #F6F6F6;
-}
 .section-title {
   font-weight: 600;
   margin-top: var(--rocf-content-margin-y);
 }
 .pattern-list {
   margin-top: var(--rocf-content-margin-y);
+  margin-bottom: 150px;
 }
 .save-revision .q-page-sticky{
   background-color: var(--rocf-secondary);
   padding: var(--rocf-page-padding);
 }
+
+.score-box .score {
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--rocf-primary);
+  background-color: var(--rocf-secondary);
+  margin: 14px 0px;
+} 
+
+.card-title {
+  color: var(--rocf-primary);
+  margin-bottom: 8px;
+}
+.score-box {
+  text-align: center;
+}
+
+.diagnosis-box {
+  padding-left: 0px;
+}
+
+table.chart {
+  width: 100%;
+}
+table tr td.progress {
+  width: 50%;
+}
+table tr td.progress .total-progress-bar{
+  width: 100%;
+  height: 10px;
+  background-color: #dedede;
+  border-radius: 5px;
+}
+table tr td.progress .total-progress-bar .actual-progress-bar {
+  height: 10px;
+  border-radius: 5px;
+}
+
+.chart .diagnosis {
+  font-size: 16px;
+  flex-wrap: nowrap;
+}
+
+table tr.Normal td.progress .total-progress-bar .actual-progress-bar {
+  background-color: var(--rocf-normal-dark);
+}
+table tr.MCI td.progress .total-progress-bar .actual-progress-bar {
+  background-color: var(--rocf-MCI-dark);
+}
+table tr.Dementia td.progress .total-progress-bar .actual-progress-bar {
+  background-color: var(--rocf-dementia-dark);
+}
+
+table tr.Normal:not(.predicted-diagnosis) ,
+table tr.MCI:not(.predicted-diagnosis) ,
+table tr.Dementia:not(.predicted-diagnosis) {
+  opacity: 0.5;
+}
+
+tr.predicted-diagnosis {
+  font-weight: 800;
+}
+
 </style>
-
-
-
-
-
-
-
