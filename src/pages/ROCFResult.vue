@@ -55,16 +55,20 @@ export default {
       labels: ['omitted', 'distorted', 'misplaced', 'correct'],
       showSaveDialog: false,
       homographyURL: '',
+      showOriginal: false,
     };
   },
   computed: {
     score() {
       return this.rocf.scores ? utils.sum(this.rocf.scores.map(pattern => pattern.score)) : 0;
     },
+    activeImgFolder() {
+      return this.showOriginal ? 'original' : 'threshed';
+    }
   },
   methods: {
     async getThreshedImage() {
-      let result = await api.getImage(`/files/xxxxxx3/${this.rocf.imageName}.png`);
+      let result = await api.getImage(`/files/xxxxxx3/${this.activeImgFolder}/${this.rocf.imageName}.png`);
       let baseImage = new Image();
       baseImage.onload = () => {
         this.homographyURL = window.URL.createObjectURL(result);
@@ -109,6 +113,11 @@ export default {
     this.rocf = this.$store.getters.getROCF(this.$route.params.id);
     this.rocf.revisedScores = this.createCloneOfScores();
     await this.getThreshedImage();
+  },
+  watch: {
+    async activeImgFolder() {
+      await this.getThreshedImage();
+    }
   }
 }
 
