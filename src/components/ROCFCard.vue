@@ -4,9 +4,9 @@
       <div class="patient">Patient {{rocf.patientCode}}</div>
       <div class="date">{{formattedDate}}</div>
     </div>
-    <div :class="['result', diagnosis.toLowerCase(), 'col-3', 'flex', 'column', 'justify-center' ]">
+    <div :class="['result', rocf.diagnosis.labelText.toLowerCase(), 'col-3', 'flex', 'column', 'justify-center' ]">
       <div class="score">{{score}}</div>
-      <div class="diagnosis">{{!rocf.scores ? 'Loading...' : diagnosis}}</div>
+      <div class="diagnosis">{{!rocf.diagnosis ? 'Loading...' : rocf.diagnosis.labelText}}</div>
     </div>
   </g-card>
 </template>
@@ -31,17 +31,17 @@ export default {
       return this.rocf.scores ? utils.sum(this.rocf.scores.map(pattern => pattern.score)) : 0;
     },
   },
-  data() {
-    return {
-      diagnosis: '',
-    };
-  },
-  beforeMount() {
-    this.diagnosis = utils.getDiagnosisFromScore(this.score);
-  },
-  beforeUpdate() {
-    this.diagnosis = utils.getDiagnosisFromScore(this.score);
-  }
+  // data() {
+  //   return {
+  //     diagnosis: '',
+  //   };
+  // },
+  // beforeMount() {
+  //   this.diagnosis = utils.getDiagnosisFromScore(this.score);
+  // },
+  // beforeUpdate() {
+  //   this.diagnosis = utils.getDiagnosisFromScore(this.score);
+  // }
 }
 
 </script>

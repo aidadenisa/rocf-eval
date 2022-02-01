@@ -81,11 +81,14 @@ export default {
     },
     activeImgFolder() {
       return this.showOriginal ? 'original' : 'threshed';
+    }, 
+    docID(){
+      return this.$store.state.user.id;
     }
   },
   methods: {
     async getThreshedImage() {
-      let result = await api.getImage(`/files/xxxxxx3/${this.activeImgFolder}/${this.rocf.imageName}.png`);
+      let result = await api.getImage(`/files/${this.docID}/${this.activeImgFolder}/${this.rocf.imageName}.png`);
       let baseImage = new Image();
       baseImage.onload = () => {
         this.homographyURL = window.URL.createObjectURL(result);
