@@ -4,7 +4,7 @@
       <div class="patient">Patient {{rocf.patientCode}}</div>
       <div class="date">{{formattedDate}}</div>
     </div>
-    <div :class="['result', rocf.diagnosis.labelText.toLowerCase(), 'col-3', 'flex', 'column', 'justify-center' ]">
+    <div :class="['result', (rocf.diagnosis ? rocf.diagnosis.labelText.toLowerCase() : '') , 'col-3', 'flex', 'column', 'justify-center' ]">
       <div class="score">{{score}}</div>
       <div class="diagnosis">{{!rocf.diagnosis ? 'Loading...' : rocf.diagnosis.labelText}}</div>
     </div>

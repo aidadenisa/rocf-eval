@@ -7,24 +7,52 @@
           <div class="card-title"> Score </div>
           <div class="score">{{score}}</div>
         </div>
-        <div class="diagnosis-box col-9 flex column items-center" v-if="rocf.diagnosis">
-          <div class="card-title"> Prediction </div>
-          <table class="chart">
-            <tr 
-              v-for="(prob, index) in rocf.diagnosis.probabilities" 
-              :key="index" 
-              :class="[label(index), 'diagnosis', {'predicted-diagnosis': index == rocf.diagnosis.labelNumber}]"
-            >
-              <td class="label"> {{label(index)}}</td>
-              <td class="progress">
-                <div class="total-progress-bar">
-                  <div class="actual-progress-bar" :style="`width: ${setWidthFromProbability(prob)}`">
-                  </div>
-                </div>
-              </td>
-              <td class="probability"> {{parseFloat(prob.toString()).toFixed(2)}} </td>
-            </tr>
-          </table>
+        <div v-if="rocf.diagnosis" class="col-9">
+          <div v-if="!changeDiagnosis">
+            <div v-if="rocf.diagnosis.doctorOverridden" class="diagnosis-overridden">
+              <div class="card-title"> Diagnosis </div>
+              <div class="diagnosis-card" :class="rocf.diagnosis.labelText">
+                {{label(rocf.diagnosis.labelNumber)}}
+              </div>
+            </div>
+            <div v-else class="system-prediction diagnosis-box flex column items-center">
+              <div class="card-title"> Prediction </div>
+              <table class="chart">
+                <tr 
+                  v-for="(prob, index) in rocf.diagnosis.probabilities" 
+                  :key="index" 
+                  :class="[label(index), 'diagnosis', {'predicted-diagnosis': index == rocf.diagnosis.labelNumber}]"
+                >
+                  <td class="label"> {{label(index)}}</td>
+                  <td class="progress">
+                    <div class="total-progress-bar">
+                      <div class="actual-progress-bar" :style="`width: ${setWidthFromProbability(prob)}`">
+                      </div>
+                    </div>
+                  </td>
+                  <td class="probability"> {{parseFloat(prob.toString()).toFixed(2)}} </td>
+                </tr>
+              </table>
+            </div>
+            <div class="button-bar">
+              <rocf-button :icon="'edit'" :icon-position="'left'" variant="secondary" :block="false" size="small" @click="changeDiagnosis = true">
+                Change Diagnosis
+              </rocf-button>
+            </div>
+          </div>
+          <div v-else class="diagnosis-box flex column items-center">
+            <div class="card-title"> Choose diagnosis </div>
+            <div class="diagnosis-choices">
+              <div :class="['normal', {selected: chosenDiagnosis == 'normal'}]" @click="chooseDiagnosis('normal')">Normal</div>
+              <div :class="['mci', {selected: chosenDiagnosis == 'mci'}]" @click="chooseDiagnosis('mci')">MCI</div>
+              <div :class="['dementia', {selected: chosenDiagnosis == 'dementia'}]" @click="chooseDiagnosis('dementia')">Dementia</div>
+            </div>
+            <div class="button-bar">
+              <rocf-button :icon="'chevron_left'" :icon-position="'left'" @click="resetDiagnosisChange" :block="false" size="small" variant="secondary">
+                Back to predictions
+              </rocf-button>
+            </div>
+          </div>
         </div>
       </g-card>
     </div>
@@ -73,6 +101,8 @@ export default {
       showSaveDialog: false,
       homographyURL: '',
       showOriginal: false,
+      changeDiagnosis: false,
+      chosenDiagnosis: ''
     };
   },
   computed: {
@@ -113,6 +143,15 @@ export default {
       }
       return clone;
     },
+    createCloneOfDiagnosis() {
+      let clone = {
+          initialDiagnosisNumber: this.rocf.diagnosis.labelNumber,
+          initialDiagnosisText: this.rocf.diagnosis.labelText,
+          revisedDiagnosisNumber: this.rocf.diagnosis.labelNumber,
+          revisedDiagnosisText: this.rocf.diagnosis.labelText,
+        };
+      return clone;
+    },
     updateScoresAfterRevision() {
       for(let i=0; i<this.rocf.scores.length; i++) {
         this.rocf.scores[i].score = this.rocf.revisedScores[i].revisedScore;
@@ -120,13 +159,21 @@ export default {
         this.rocf.scores[i].labelNumber = this.labels.indexOf(this.rocf.revisedScores[i].revisedLabel);
       }
     },
+    updateDiagnosisAfterRevision() {
+      this.rocf.diagnosis.labelNumber = this.rocf.revisedDiagnosis.revisedDiagnosisNumber;
+      this.rocf.diagnosis.labelText = this.rocf.revisedDiagnosis.revisedDiagnosisText;
+      this.rocf.diagnosis.probabilities = this.rocf.revisedDiagnosis.revisedProbabilities;
+      this.rocf.diagnosis.doctorOverridden = this.rocf.revisedDiagnosis.revisedDoctorOverridden;
+    },
     async saveRevision() {
       this.rocf["_rocfEvaluationId"] = this.rocf._id;
       this.updateScoresAfterRevision();
+      this.updateDiagnosisAfterRevision();
       let result = await api.post('/revision', this.rocf );
       console.log(result);
       alert("The ROCF evaluation was saved successfully!");
       this.revised = false;
+      this.changeDiagnosis = false;
     },
     label(index) {
       if(index == 0) {
@@ -137,14 +184,49 @@ export default {
         return 'Dementia';
       }
     },
+    getNumberFromLabel(label) {
+      if(label.toLowerCase() == 'normal'){
+        return 0;
+      } else if (label.toLowerCase() == 'mci') {
+        return 1;
+      } else {
+        return 2;
+      }
+    },
     setWidthFromProbability(prob) {
       let progress = parseFloat(prob).toFixed(2) * 100;
       return progress + '%';
+    },
+    getProbabilitiesForChosenLabel(chosenDiagnosis) {
+      let probabilities = [];
+      for(let i=0; i<3; i++) {
+        if(this.getNumberFromLabel(chosenDiagnosis) == i) {
+          probabilities.push(1.0);
+        } else {
+          probabilities.push(0.0);
+        }
+      }
+      return probabilities;
+    },
+    chooseDiagnosis(label) {
+      this.revised = true;
+      this.chosenDiagnosis = label;
+
+      this.rocf.revisedDiagnosis.revisedDiagnosisNumber = this.getNumberFromLabel(this.chosenDiagnosis);
+      this.rocf.revisedDiagnosis.revisedDiagnosisText = this.chosenDiagnosis;
+      // this.rocf.revisedDiagnosis.revisedProbabilities = this.getProbabilitiesForChosenLabel(this.chosenDiagnosis);
+      this.rocf.revisedDiagnosis.revisedDoctorOverridden = true;
+    },
+    resetDiagnosisChange() {
+      this.changeDiagnosis = false;
+      this.chosenDiagnosis = '';
+      this.rocf.revisedDiagnosis = this.createCloneOfDiagnosis();
     }
   },
   async beforeMount() {
     this.rocf = this.$store.getters.getROCF(this.$route.params.id);
     this.rocf.revisedScores = this.createCloneOfScores();
+    this.rocf.revisedDiagnosis = this.createCloneOfDiagnosis();
     await this.getThreshedImage();
   },
   watch: {
@@ -241,5 +323,42 @@ table tr.Dementia:not(.predicted-diagnosis) {
 tr.predicted-diagnosis {
   font-weight: 800;
 }
+.save-revision .rocf-button {
+  margin-bottom: 0;
+}
+.button-bar {
+  margin-top: 10px;
+}
+.diagnosis-choices,
+.diagnosis-choices > *,
+.diagnosis-card,
+.diagnosis-overridden {
+  width: 100%;
+  text-align: center;
+}
+.diagnosis-choices > *,
+.diagnosis-card {
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+.diagnosis-choices .normal.selected,
+.diagnosis-card.normal {
+  background-color: var(--rocf-normal);
+  color: var(--rocf-normal-dark);
+}
+.diagnosis-choices .mci.selected,
+.diagnosis-card.mci {
+  background-color: var(--rocf-MCI);
+  color: var(--rocf-MCI-dark);
+}
+.diagnosis-choices .dementia.selected,
+.diagnosis-card.dementia {
+  background-color: var(--rocf-dementia);
+  color: var(--rocf-dementia-dark);
+}
 
+.diagnosis-choices > *:not(.selected) {
+  background-color: #F2F2F2;
+}
 </style>

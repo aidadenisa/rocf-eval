@@ -102,7 +102,7 @@ export default {
       data.adaptiveThresholdC = this.ATconstant;
       data.adaptiveThresholdBS = this.ATblockSize;
 
-      let result = await api.put('/prediction', data);
+      let result = await api.post('/prediction', data);
       // alert(result)
       this.info = result;
       localStorage.setItem('evaluationInProgressId', result._id);
