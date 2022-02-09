@@ -17,7 +17,8 @@
             <img :src="originalPatternURL">
           </div>
           <div class="pattern-found">
-            <roi-visualization :roi="pattern.roi" :homographyURL="homographyURL"></roi-visualization>
+            <roi-visualization :roi="pattern.roi" :homographyURL="homographyURL" @click-on-canvas="$emit('open-modal-drawing',pattern, homographyURL)">
+            </roi-visualization>
           </div>
         </div>
         <div class="score-box">
@@ -110,7 +111,10 @@ export default {
       this.revisedPattern.chosenLabelNumber = newPatternLabel;
       this.toggleEditMode();
       this.$emit('newConfig', this.index, this.revisedPattern);
-    } 
+    },
+    openModalForDrawing() {
+
+    }
   },
   beforeMount() {
     this.setRevisedPattern();

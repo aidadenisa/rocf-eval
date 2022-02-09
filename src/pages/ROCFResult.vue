@@ -66,6 +66,7 @@
         :index="index"
         :homographyURL="homographyURL"
         @newConfig="saveNewScoreForPattern"
+        @open-modal-drawing="openModalWithPattern"
       ></rocf-pattern>
     </div>
 
@@ -74,6 +75,28 @@
         <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="saveRevision">Save revision</rocf-button>
       </q-page-sticky>
     </div>
+
+    <q-dialog
+      v-model="zoomImage"
+      full-height
+      full-width
+    >
+      <q-card class="column full-height full-width" >
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Zoom and adjust</div>
+          <q-space/>
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section class="image-canvas col q-pt-none scroll">
+          <roi-visualization :roi="zoomROI" :homographyURL="zoomImageURL"></roi-visualization>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -84,6 +107,7 @@ import RocfButton from '../components/ROCFButton.vue';
 import GCard from '../components/GCard.vue';
 import utils from '../services/utils.js';
 import api from '../services/api.js';
+import RoiVisualization from 'src/components/ROIVisualization.vue';
 
 export default {
   components: {
@@ -91,6 +115,7 @@ export default {
     SubpageHeading, 
     GCard,
     RocfButton,
+    RoiVisualization,
   },
   data() {
     return {
@@ -102,7 +127,10 @@ export default {
       homographyURL: '',
       showOriginal: false,
       changeDiagnosis: false,
-      chosenDiagnosis: ''
+      chosenDiagnosis: '',
+      zoomImage: false,
+      zoomImageURL: '',
+      zoomROI: [],
     };
   },
   computed: {
@@ -221,7 +249,15 @@ export default {
       this.changeDiagnosis = false;
       this.chosenDiagnosis = '';
       this.rocf.revisedDiagnosis = this.createCloneOfDiagnosis();
-    }
+    },
+    openModalWithPattern(pattern, homographyURL) {
+      console.log("event openModalWithPattern");
+      console.log(pattern);
+      console.log(homographyURL);
+      this.zoomImage = true;
+      this.zoomImageURL = homographyURL;
+      this.zoomROI = pattern.roi;
+    },
   },
   async beforeMount() {
     this.rocf = this.$store.getters.getROCF(this.$route.params.id);
@@ -360,5 +396,11 @@ tr.predicted-diagnosis {
 
 .diagnosis-choices > *:not(.selected) {
   background-color: #F2F2F2;
+}
+
+.image-canvas {
+  width:100%;
+  max-height: 80vh;
+  overflow-x: scroll;
 }
 </style>

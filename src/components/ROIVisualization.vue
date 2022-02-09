@@ -1,7 +1,7 @@
 <template>
   <div class="roi-canvas">
     <img :src="homographyURL">
-    <canvas ref="roi"></canvas>
+    <canvas ref="roi" @click="$emit('click-on-canvas')"></canvas>
   </div>
 </template>
 
@@ -63,6 +63,15 @@ export default {
       }  
       
     },
+  },
+  beforeMount(){
+    console.log('beforeMount');
+  },
+  mounted() {
+    console.log('mounted');
+    if(this.homographyURL) {
+      this.setupCanvas();
+    }
   },
   watch: {
     homographyURL() {
