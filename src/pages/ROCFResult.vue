@@ -89,7 +89,7 @@
         </q-card-section>
 
         <q-card-section class="image-canvas col q-pt-none scroll">
-          <roi-visualization :roi="zoomROI" :homographyURL="zoomImageURL"></roi-visualization>
+          <roi-change-modal :zoomImageURL="zoomImageURL" :zoomROI="zoomROI"></roi-change-modal>
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
@@ -97,6 +97,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    
   </q-page>
 </template>
 
@@ -107,15 +108,14 @@ import RocfButton from '../components/ROCFButton.vue';
 import GCard from '../components/GCard.vue';
 import utils from '../services/utils.js';
 import api from '../services/api.js';
-import RoiVisualization from 'src/components/ROIVisualization.vue';
-
+import RoiChangeModal from '../components/RoiChangeModal.vue';
 export default {
   components: {
     RocfPattern,
     SubpageHeading, 
     GCard,
     RocfButton,
-    RoiVisualization,
+    RoiChangeModal
   },
   data() {
     return {

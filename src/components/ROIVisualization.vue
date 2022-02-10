@@ -22,7 +22,7 @@ export default {
   props: {
     roi: {
       type: Array,
-      default: () => [[[100, 50], [500, 50], [500, 300], [100, 300]]]
+      // default: () => [[[100, 50], [500, 50], [500, 300], [100, 300]]]
     },
     homographyURL: {
       type: String,
