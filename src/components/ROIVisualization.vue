@@ -1,7 +1,7 @@
 <template>
   <div class="roi-canvas">
     <img :src="homographyURL">
-    <canvas ref="roi" @click="$emit('click-on-canvas')"></canvas>
+    <canvas ref="roi" @click="$emit('click-on-canvas', roi)"></canvas>
   </div>
 </template>
 
@@ -79,6 +79,9 @@ export default {
         this.setupCanvas();
       }, 500)
       
+    },
+    roi() {
+      this.drawImage();
     }
   }
 }

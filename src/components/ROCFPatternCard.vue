@@ -17,7 +17,7 @@
             <img :src="originalPatternURL">
           </div>
           <div class="pattern-found">
-            <roi-visualization :roi="pattern.roi" :homographyURL="homographyURL" @click-on-canvas="$emit('open-modal-drawing',pattern, homographyURL)">
+            <roi-visualization v-if="revisedPattern.chosenROI" :roi="revisedPattern.chosenROI" :homographyURL="homographyURL" @click-on-canvas="openROIChangeModal">
             </roi-visualization>
           </div>
         </div>
@@ -71,6 +71,7 @@ export default {
         chosenScore: 0,
         chosenLabel: 'omitted',
         chosenLabelNumber: 0,
+        chosenROI: [],
       }
     }
   },
@@ -95,6 +96,7 @@ export default {
         chosenScore: this.pattern.score,
         chosenLabel: this.pattern.label,
         chosenLabelNumber: this.pattern.labelNumber,
+        chosenROI: this.pattern.roi,
       }
     },
     toggleEditMode() {
@@ -112,8 +114,13 @@ export default {
       this.toggleEditMode();
       this.$emit('newConfig', this.index, this.revisedPattern);
     },
-    openModalForDrawing() {
-
+    handleNewROI(newROI,patternIndex) {
+      if (patternIndex != this.index) return;
+      this.revisedPattern.chosenROI = newROI;
+      this.revisedPattern = JSON.parse(JSON.stringify(this.revisedPattern));
+    },
+    openROIChangeModal(roi) {
+      this.$emit('open-modal-drawing', roi, this.homographyURL, this.index);
     }
   },
   beforeMount() {

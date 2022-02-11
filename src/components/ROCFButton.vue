@@ -80,4 +80,9 @@ export default {
   padding: 8px;
 }
 
+.rocf-button.variant-accent {
+  background: #D2E1FF;
+  color: var(--rocf-primary);
+}
+
 </style>

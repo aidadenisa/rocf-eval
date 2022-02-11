@@ -65,6 +65,7 @@
         :pattern="pattern"
         :index="index"
         :homographyURL="homographyURL"
+        :ref="`patternCard${index}`"
         @newConfig="saveNewScoreForPattern"
         @open-modal-drawing="openModalWithPattern"
       ></rocf-pattern>
@@ -89,11 +90,13 @@
         </q-card-section>
 
         <q-card-section class="image-canvas col q-pt-none scroll">
-          <roi-change-modal :zoomImageURL="zoomImageURL" :zoomROI="zoomROI"></roi-change-modal>
+          <roi-change-modal :zoomImageURL="zoomImageURL" :zoomROI="zoomROI" :changeROI="changeROI" @roi-changed="saveROIChange">
+          </roi-change-modal>
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
+          <rocf-button v-if="!changeROI" :icon="'edit'" :icon-position="'left'" variant="accent" @click="setupChangeROI">Change region of pattern</rocf-button>
+          <rocf-button v-if="changeROI" @click="changeROI = false">Save new region</rocf-button>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -131,6 +134,8 @@ export default {
       zoomImage: false,
       zoomImageURL: '',
       zoomROI: [],
+      zoomPatternIndex: null,
+      changeROI: false,
     };
   },
   computed: {
@@ -250,14 +255,22 @@ export default {
       this.chosenDiagnosis = '';
       this.rocf.revisedDiagnosis = this.createCloneOfDiagnosis();
     },
-    openModalWithPattern(pattern, homographyURL) {
-      console.log("event openModalWithPattern");
-      console.log(pattern);
-      console.log(homographyURL);
+    openModalWithPattern(roi, homographyURL, index) {
       this.zoomImage = true;
       this.zoomImageURL = homographyURL;
-      this.zoomROI = pattern.roi;
+      this.zoomROI = roi;
+      this.zoomPatternIndex = index;
     },
+    setupChangeROI() {
+      this.changeROI = true;
+    },
+    saveROIChange(newROI) {
+      this.$refs[`patternCard${this.zoomPatternIndex}`].handleNewROI(newROI, this.zoomPatternIndex);
+      this.zoomImage = false;
+      this.zoomImageURL = '';
+      this.zoomROI = [];
+      this.zoomPatternIndex = null;
+    }
   },
   async beforeMount() {
     this.rocf = this.$store.getters.getROCF(this.$route.params.id);
