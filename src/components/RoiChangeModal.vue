@@ -273,6 +273,21 @@ export default {
       
       this.draggingPoints[corner.min_index][corner.min_point][0] = -this.currentPointInOrigin.x / this.zoom + event.pageX;
       this.draggingPoints[corner.min_index][corner.min_point][1] = -this.currentPointInOrigin.y / this.zoom + event.pageY;
+    },
+    calcPolygonArea(vertices) {
+      var total = 0;
+
+      for (var i = 0, l = vertices.length; i < l; i++) {
+        var addX = vertices[i][0];
+        var addY = vertices[i == vertices.length - 1 ? 0 : i + 1][1];
+        var subX = vertices[i == vertices.length - 1 ? 0 : i + 1][0];
+        var subY = vertices[i][1];
+
+        total += (addX * addY * 0.5);
+        total -= (subX * subY * 0.5);
+      }
+
+      return Math.abs(total);
     }
   },
   mounted() {
@@ -298,6 +313,40 @@ export default {
           if (this.zoomROI[r].length == 4) {
             // set the dragging points as the 4 points
             draggingPoints.push(this.zoomROI[r]);
+          } else if(this.zoomROI[r].length == 6) {
+            let min_dist = 99999;
+            let min_p1 = null;
+            let min_p2 = null;
+            let j = 0;
+            for(let i=1; i<this.zoomROI[r].length-1; i++) {
+              const p1 = this.zoomROI[r][j];
+              const p2 = this.zoomROI[r][i];
+              const dist = Math.sqrt( Math.pow((p1[0]-p2[0]), 2) + Math.pow((p1[1]-p2[1]), 2) );
+              if(dist < min_dist) {
+                min_dist = dist;
+                min_p1 = j;
+                min_p2 = i;
+              }
+              j += 1;
+            }
+            //check which area is bigger, by removing both points.
+
+            let verticesWithoutDoubleStart = [...this.zoomROI[r]];
+            verticesWithoutDoubleStart.pop();
+            //area without p1:
+            let verticesWithoutP1 = verticesWithoutDoubleStart.filter((element, index) => { return index != min_p1});
+            const areaWithoutP1 = this.calcPolygonArea(verticesWithoutP1);
+
+            //area without p2:
+            let verticesWithoutP2 = verticesWithoutDoubleStart.filter((element, index) => { return index != min_p2});
+            const areaWithoutP2 = this.calcPolygonArea(verticesWithoutP2);
+
+            if(areaWithoutP1 > areaWithoutP2) {
+              draggingPoints.push(verticesWithoutP2);
+            } else {
+              draggingPoints.push(verticesWithoutP1);
+            }
+
           } else {
             // get the minimum and maximum coordinates and create a fake ROI around it
             let min_x = 99999, min_y = 99999, max_x = 0, max_y = 0;
@@ -332,7 +381,7 @@ export default {
         this.drawROI();
       }
 
-    }
+    },
   }
 };
 
