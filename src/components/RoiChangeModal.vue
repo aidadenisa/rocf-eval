@@ -46,7 +46,10 @@ export default {
       points: [],
       result: '', 
       draggingPoints: [],
-      selectedCorner: null,
+      selectedCorner: {
+        min_index: null,
+        min_point: null,
+      },
     }
   },
   methods: {
@@ -126,8 +129,8 @@ export default {
             };
 
             if (this.changeROI) {
-              const corner = this.getSelectedCorner(event); 
-              this.selectedCorner = corner;
+              const cornerIdentifiers = this.getSelectedCorner(event); 
+              this.selectedCorner = cornerIdentifiers;
             }
             
         } 
@@ -148,7 +151,7 @@ export default {
         // event = event.originalEvent || event;
 
         if(event.touches.length == 1 && this.dragging) {
-          if (this.changeROI && this.selectedCorner !== null) {
+          if (this.changeROI && this.selectedCorner.min_point !== null) {
             this.dragCorner(event, this.selectedCorner);
           } else {
             this.handleDrag(event);
@@ -204,39 +207,41 @@ export default {
     drawDraggingPoints() {
 
       this.drawImage();
-      // initial point
-      const point = {
-            x: this.draggingPoints[0][0] * this.zoom + this.currentPointInOrigin.x,
-            y: this.draggingPoints[0][1] * this.zoom + this.currentPointInOrigin.y, 
-        }
-
-      this.context.strokeStyle = '#f00';
-      this.context.beginPath();
-      this.context.moveTo(point.x, point.y);
       
-      for(let i=1; i < this.draggingPoints.length; i++) {
-        const nextPoint = {
-          x: this.draggingPoints[i][0] * this.zoom + this.currentPointInOrigin.x,
-          y: this.draggingPoints[i][1] * this.zoom + this.currentPointInOrigin.y, 
-        }
-        this.context.lineTo(nextPoint.x, nextPoint.y);
-      }
-      this.context.closePath();
-      this.context.lineWidth = 3 * this.zoom;
-      this.context.stroke();
+      for(let r=0; r<this.draggingPoints.length; r++) {
+        // initial point
+        const point = {
+              x: this.draggingPoints[r][0][0] * this.zoom + this.currentPointInOrigin.x,
+              y: this.draggingPoints[r][0][1] * this.zoom + this.currentPointInOrigin.y, 
+          }
 
-      for(let i=0; i < this.draggingPoints.length; i++) {
-        
-        const corner = {
-          x: this.draggingPoints[i][0] * this.zoom + this.currentPointInOrigin.x,
-          y: this.draggingPoints[i][1] * this.zoom + this.currentPointInOrigin.y, 
-        }
+        this.context.strokeStyle = '#f00';
         this.context.beginPath();
-        this.context.arc(corner.x, corner.y, this.radius * this.zoom, 0, 2 * Math.PI);
-        this.context.fillStyle = 'blue';
-        this.context.fill();
+        this.context.moveTo(point.x, point.y);
+        
+        for(let i=1; i < this.draggingPoints[r].length; i++) {
+          const nextPoint = {
+            x: this.draggingPoints[r][i][0] * this.zoom + this.currentPointInOrigin.x,
+            y: this.draggingPoints[r][i][1] * this.zoom + this.currentPointInOrigin.y, 
+          }
+          this.context.lineTo(nextPoint.x, nextPoint.y);
+        }
+        this.context.closePath();
+        this.context.lineWidth = 3 * this.zoom;
+        this.context.stroke();
+
+        for(let i=0; i < this.draggingPoints[r].length; i++) {
+          
+          const corner = {
+            x: this.draggingPoints[r][i][0] * this.zoom + this.currentPointInOrigin.x,
+            y: this.draggingPoints[r][i][1] * this.zoom + this.currentPointInOrigin.y, 
+          }
+          this.context.beginPath();
+          this.context.arc(corner.x, corner.y, this.radius * this.zoom, 0, 2 * Math.PI);
+          this.context.fillStyle = 'blue';
+          this.context.fill();
+        }
       }
-      
 
     },
     getSelectedCorner(event) {
@@ -249,21 +254,25 @@ export default {
 
       let min_dist = 9999;
       let min_point = null;
-      for (let i=0; i<this.draggingPoints.length; i++) {
-        const dist = Math.sqrt( Math.pow((point.x-this.draggingPoints[i][0]), 2) + Math.pow((point.y-this.draggingPoints[i][1]), 2) );
-        if (dist < (this.radius * this.zoom) && dist < min_dist) {  
-          min_dist = dist;
-          min_point =i;
+      let min_index = null;
+      for (let r=0; r<this.draggingPoints.length; r++) {
+        for (let i=0; i<this.draggingPoints[r].length; i++) {
+          const dist = Math.sqrt( Math.pow((point.x-this.draggingPoints[r][i][0]), 2) + Math.pow((point.y-this.draggingPoints[r][i][1]), 2) );
+          if (dist < (this.radius * this.zoom + 10) && dist < min_dist) {  
+            min_dist = dist;
+            min_point = i;
+            min_index = r;
+          }
         }
       }
-
-      return min_point;
+      
+      return {'min_point': min_point, 'min_index': min_index};
     },
     dragCorner(event, corner) {
       event.preventDefault();
       
-      this.draggingPoints[corner][0] = -this.currentPointInOrigin.x / this.zoom + event.pageX;
-      this.draggingPoints[corner][1] = -this.currentPointInOrigin.y / this.zoom + event.pageY;
+      this.draggingPoints[corner.min_index][corner.min_point][0] = -this.currentPointInOrigin.x / this.zoom + event.pageX;
+      this.draggingPoints[corner.min_index][corner.min_point][1] = -this.currentPointInOrigin.y / this.zoom + event.pageY;
     }
   },
   mounted() {
@@ -282,34 +291,39 @@ export default {
     changeROI(value) {
       if(value) {
         // setup edit mode for ROI
+
+        let draggingPoints = []
         
-        if (this.zoomROI.length == 1 ) {
-          if (this.zoomROI[0].length == 4) {
+        for (let r = 0; r<this.zoomROI.length; r++) {
+          if (this.zoomROI[r].length == 4) {
             // set the dragging points as the 4 points
-            this.draggingPoints = this.zoomROI[0];
+            draggingPoints.push(this.zoomROI[r]);
           } else {
             // get the minimum and maximum coordinates and create a fake ROI around it
             let min_x = 99999, min_y = 99999, max_x = 0, max_y = 0;
-            for(let i=0; i< this.zoomROI[0].length; i++) {
-              if (this.zoomROI[0][i][0] < min_x) min_x = this.zoomROI[0][i][0];
-              if (this.zoomROI[0][i][0] > max_x) max_x = this.zoomROI[0][i][0];
-              if (this.zoomROI[0][i][1] < min_y) min_y = this.zoomROI[0][i][1];
-              if (this.zoomROI[0][i][1] > max_y) max_y = this.zoomROI[0][i][1];
+            for(let i=0; i< this.zoomROI[r].length; i++) {
+              if (this.zoomROI[r][i][0] < min_x) min_x = this.zoomROI[r][i][0];
+              if (this.zoomROI[r][i][0] > max_x) max_x = this.zoomROI[r][i][0];
+              if (this.zoomROI[r][i][1] < min_y) min_y = this.zoomROI[r][i][1];
+              if (this.zoomROI[r][i][1] > max_y) max_y = this.zoomROI[r][i][1];
             }
-            this.draggingPoints = [
+            draggingPoints.push([
               [min_x, min_y],
               [max_x, min_y],
               [max_x, max_y],
               [min_x, max_y],
-            ];
+            ]);
           }
-          this.drawDraggingPoints();
-        }
+        } 
+
+        this.draggingPoints = draggingPoints;
+
+        this.drawDraggingPoints();
 
       } else {
         // come back to normal view
 
-        this.$emit('roi-changed', [this.draggingPoints]);
+        this.$emit('roi-changed', this.draggingPoints);
 
         this.draggingPoints = [];
         this.selectedCorner = null;
