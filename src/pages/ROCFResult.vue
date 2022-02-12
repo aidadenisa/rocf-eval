@@ -2,12 +2,18 @@
   <q-page :class="['flex','column']"> 
     <subpage-heading title="ROCF Patterns evaluation complete" subtitle="New ROCF Evaluation"></subpage-heading>
     <div class="total-result">
-      <g-card class="result-box flex row">
-        <div class="score-box col-3">
-          <div class="card-title"> Score </div>
-          <div class="score">{{score}}</div>
+      <g-card class="result-box flex column">
+        <div class="flex row">
+          <div class="patient-code col-9">
+            <div class="card-title">Patient Code</div>
+            <div class="code">{{rocf.patientCode}}</div>
+          </div>
+          <div class="score-box col-3">
+            <div class="card-title"> Score </div>
+            <div class="score">{{score}}</div>
+          </div>
         </div>
-        <div v-if="rocf.diagnosis" class="col-9">
+        <div v-if="rocf.diagnosis">
           <div v-if="!changeDiagnosis">
             <div v-if="rocf.diagnosis.doctorOverridden" class="diagnosis-overridden">
               <div class="card-title"> Diagnosis </div>
@@ -301,8 +307,6 @@ export default {
 .result-box {
   font-size: 18px;
   font-weight: 600;
-}
-.result-box > div {
   padding: var(--rocf-card-padding);
 }
 .label-box {
@@ -326,7 +330,6 @@ export default {
   border-radius: 4px;
   color: var(--rocf-primary);
   background-color: var(--rocf-secondary);
-  margin: 14px 0px;
 } 
 
 .card-title {
