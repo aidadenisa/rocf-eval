@@ -161,6 +161,7 @@ export default {
     saveNewScoreForPattern(index, newPatternConfig) {
       this.rocf.revisedScores[index].revisedScore = newPatternConfig.chosenScore;
       this.rocf.revisedScores[index].revisedLabel = newPatternConfig.chosenLabel;
+      this.rocf.revisedScores[index].revisedROI = newPatternConfig.chosenROI;
       this.revised = true;
     },
     createCloneOfScores() {
@@ -170,8 +171,10 @@ export default {
         clone.push({
           initialScore: this.rocf.scores[i].score,
           initialLabel: this.rocf.scores[i].label,
+          initialROI: this.rocf.scores[i].roi,
           revisedScore: this.rocf.scores[i].score,
           revisedLabel: this.rocf.scores[i].label,
+          revisedROI: this.rocf.scores[i].roi,
         });
       }
       return clone;
@@ -198,10 +201,16 @@ export default {
       this.rocf.diagnosis.probabilities = this.rocf.revisedDiagnosis.revisedProbabilities;
       this.rocf.diagnosis.doctorOverridden = this.rocf.revisedDiagnosis.revisedDoctorOverridden;
     },
+    updateROIsAfterRevision() {
+      for(let i=0; i<this.rocf.scores.length; i++) {
+        this.rocf.scores[i].roi = this.rocf.revisedScores[i].revisedROI;
+      }
+    },
     async saveRevision() {
       this.rocf["_rocfEvaluationId"] = this.rocf._id;
       this.updateScoresAfterRevision();
       this.updateDiagnosisAfterRevision();
+      this.updateROIsAfterRevision();
       let result = await api.post('/revision', this.rocf );
       console.log(result);
       alert("The ROCF evaluation was saved successfully!");
@@ -270,6 +279,7 @@ export default {
       this.zoomImageURL = '';
       this.zoomROI = [];
       this.zoomPatternIndex = null;
+      this.revised = true;
     }
   },
   async beforeMount() {

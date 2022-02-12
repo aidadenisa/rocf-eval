@@ -118,6 +118,7 @@ export default {
       if (patternIndex != this.index) return;
       this.revisedPattern.chosenROI = newROI;
       this.revisedPattern = JSON.parse(JSON.stringify(this.revisedPattern));
+      this.$emit('newConfig', this.index, this.revisedPattern);
     },
     openROIChangeModal(roi) {
       this.$emit('open-modal-drawing', roi, this.homographyURL, this.index);
