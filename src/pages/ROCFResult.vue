@@ -87,6 +87,7 @@
       v-model="zoomImage"
       full-height
       full-width
+      @hide="resetDialog"
     >
       <q-card class="column full-height full-width" >
         <q-card-section class="row items-center q-pb-none">
@@ -204,7 +205,6 @@ export default {
     updateDiagnosisAfterRevision() {
       this.rocf.diagnosis.labelNumber = this.rocf.revisedDiagnosis.revisedDiagnosisNumber;
       this.rocf.diagnosis.labelText = this.rocf.revisedDiagnosis.revisedDiagnosisText;
-      this.rocf.diagnosis.probabilities = this.rocf.revisedDiagnosis.revisedProbabilities;
       this.rocf.diagnosis.doctorOverridden = this.rocf.revisedDiagnosis.revisedDoctorOverridden;
     },
     updateROIsAfterRevision() {
@@ -262,7 +262,6 @@ export default {
 
       this.rocf.revisedDiagnosis.revisedDiagnosisNumber = this.getNumberFromLabel(this.chosenDiagnosis);
       this.rocf.revisedDiagnosis.revisedDiagnosisText = this.chosenDiagnosis;
-      // this.rocf.revisedDiagnosis.revisedProbabilities = this.getProbabilitiesForChosenLabel(this.chosenDiagnosis);
       this.rocf.revisedDiagnosis.revisedDoctorOverridden = true;
     },
     resetDiagnosisChange() {
@@ -281,11 +280,15 @@ export default {
     },
     saveROIChange(newROI) {
       this.$refs[`patternCard${this.zoomPatternIndex}`].handleNewROI(newROI, this.zoomPatternIndex);
+      this.resetDialog();
+      this.revised = true;
+    },
+    resetDialog() {
       this.zoomImage = false;
       this.zoomImageURL = '';
       this.zoomROI = [];
       this.zoomPatternIndex = null;
-      this.revised = true;
+      this.changeROI = false;
     }
   },
   async beforeMount() {
