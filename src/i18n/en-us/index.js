@@ -22,5 +22,14 @@ export default {
   newRocf_takePhoto: "Take a photo of the drawing",
 
   //ROCF Card: 
-  rocfCard_patient: 'Patient'
+  rocfCard_patient: 'Patient',
+
+  //Patient Code Page
+  patientCode_subtitle: "New ROCF Evaluation",
+  patientCode_title: "Please provide the patient's code",
+  patientCode_scanButton: "Scan Image",
+
+  //Camera Page
+  camera_subtitle: "Take a photo with the patient’s drawing, as in the example below",
+  camera_takePictureBtn: "Take a picture",
 }

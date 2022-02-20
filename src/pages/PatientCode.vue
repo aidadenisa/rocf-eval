@@ -1,11 +1,11 @@
 <template>
   <q-page :class="['flex','column', {'justify-between': !focused }, {'justify-center': focused }]"> 
-    <subpage-heading subtitle="New ROCF Evaluation" title="Please provide the patient's code"></subpage-heading>
+    <subpage-heading :subtitle="subtitleTxt" :title="titleTxt"></subpage-heading>
     <div class="input-box">
       <input v-model="code" class="code-input" @focus="setFocusedMode" @blur="unsetFocusedMode">
     </div>
     <router-link to="/evaluate/camera">
-        <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click.stop="savePatientCode">Scan Image</rocf-button>
+        <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click.stop="savePatientCode">{{scanBtnTxt}}</rocf-button>
     </router-link>
   </q-page>
 </template>
@@ -36,6 +36,17 @@ export default {
       this.focused = false;
     },
   },
+  computed: {
+    titleTxt() {
+      return this.$t('patientCode_title');
+    },
+    subtitleTxt() {
+      return this.$t('patientCode_subtitle');
+    },
+    scanBtnTxt() {
+      return this.$t('patientCode_scanButton');
+    },
+  }
 }
 </script>
 

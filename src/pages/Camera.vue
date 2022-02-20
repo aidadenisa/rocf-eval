@@ -1,9 +1,9 @@
 <template>
   <q-page class="camera-page flex column justify-between">
-    <subpage-heading :subtitle="'Take a photo with the patient’s drawing, as in the example below'"></subpage-heading>
+    <subpage-heading :subtitle="subtitleTxt"></subpage-heading>
 
     <div class="take-picture-btn">
-      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="takePicture">Take a picture</rocf-button>
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="takePicture">{{takePictureTxt}}</rocf-button>
     </div>
 
   </q-page>
@@ -80,6 +80,14 @@ export default {
   },
   beforeUnmount() {
     CameraPreview.stopCamera();
+  },
+  computed: {
+    subtitleTxt() {
+      return this.$t('camera_subtitle');
+    },
+    takePictureTxt() {
+      return this.$t('camera_takePictureBtn');
+    }
   }
 }
 </script>
