@@ -1,11 +1,15 @@
 <template>
   <q-page class="register-page flex column justify-center">
+    <div class="language">
+      <lang-switch></lang-switch>
+    </div>
     <div class="logo">
       <h3> Evaluator </h3>
       <h2> ROCF </h2>
       
     </div>
     <div class="register-form flex column">
+      
       <div class="field flex column">
         <div class="input-wrapper">
           <input type="email" id="email" v-model="email" placeholder="Email" required>
@@ -19,10 +23,9 @@
 
       <div class="register-link">
         <router-link to="/register">
-          You don't have an account? Register here!
+          {{loginRegisterLink}}
         </router-link>
       </div>
-
       <rocf-button type="password" class="submit-button" @click="login">Login</rocf-button>
 
     </div>
@@ -31,6 +34,7 @@
 
 <script>
 import RocfButton from '../components/ROCFButton.vue';
+import LangSwitch from '../components/LangSwitch.vue';
 import api from '../services/api.js';
 
 export default {
@@ -38,10 +42,16 @@ export default {
     return {
       email: '',
       pass: '',
-    };
+};
   },
   components: {
-    RocfButton
+    RocfButton,
+    LangSwitch,
+  },
+  computed: {
+    loginRegisterLink() {
+      return this.$t('login_registerLink');
+    }
   },
   methods: {
     async login() {
@@ -128,5 +138,11 @@ label {
 .register-link a {
   color: var(--rocf-primary);
   padding: 10px 0 30px 0;
+}
+
+.language {
+  position: absolute;
+  top: 20px;
+  right: 0px;
 }
 </style>

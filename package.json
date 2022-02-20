@@ -19,10 +19,12 @@
     "opencv.js": "^1.2.1",
     "pinch-zoom-js": "^2.3.4",
     "quasar": "^2.0.0",
+    "vue-i18n": "^9.2.0-beta.30",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
+    "@intlify/vue-i18n-loader": "^4.1.0",
     "@quasar/app": "^3.0.0",
     "electron": "^15.0.0",
     "eslint": "^7.14.0",
