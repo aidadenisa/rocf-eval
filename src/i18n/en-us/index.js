@@ -17,4 +17,10 @@ export default {
   dashboard_previousROCF: "Previous ROCF Evaluations",
   dashboard_noROCF: "There are no ROCFs evaluations yet.",
 
+  //NewROCF: 
+  newRocf_evaluate: "Evaluate new ROCF",
+  newRocf_takePhoto: "Take a photo of the drawing",
+
+  //ROCF Card: 
+  rocfCard_patient: 'Patient'
 }

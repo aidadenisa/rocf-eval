@@ -1,8 +1,8 @@
 <template>
   <div class="new-rocf">  
     <img src="../assets/img/rocf-icons_new-rocf.svg">
-    <p class="call-to-action">Evaluate new ROCF</p>
-    <p class="info">Take a photo of the drawing</p>
+    <p class="call-to-action">{{evaluateRocfTxt}}</p>
+    <p class="info">{{infoText}}</p>
   </div>
 </template>
 
@@ -15,6 +15,15 @@ export default {
       info: ''
     };
   },
+  computed: {
+    evaluateRocfTxt() {
+      return this.$t('newRocf_evaluate');
+    },
+    infoText() {
+      return this.$t('newRocf_takePhoto');
+    },
+
+  }
 }
 
 </script>

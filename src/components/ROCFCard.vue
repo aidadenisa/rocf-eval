@@ -1,7 +1,7 @@
 <template>
   <g-card :class="['rocf-card', 'flex', 'row',{'scores-missing': !rocf.scores}]" >  
     <div class="info col-9">
-      <div class="patient">Patient {{rocf.patientCode}}</div>
+      <div class="patient">{{patientTxt}} {{rocf.patientCode}}</div>
       <div class="date">{{formattedDate}}</div>
     </div>
     <div :class="['result', (rocf.diagnosis ? rocf.diagnosis.labelText.toLowerCase() : '') , 'col-3', 'flex', 'column', 'justify-center' ]">
@@ -30,18 +30,11 @@ export default {
     score() {
       return this.rocf.scores ? utils.sum(this.rocf.scores.map(pattern => pattern.score)) : 0;
     },
+    patientTxt() {
+      return this.$t('rocfCard_patient');
+    },
   },
-  // data() {
-  //   return {
-  //     diagnosis: '',
-  //   };
-  // },
-  // beforeMount() {
-  //   this.diagnosis = utils.getDiagnosisFromScore(this.score);
-  // },
-  // beforeUpdate() {
-  //   this.diagnosis = utils.getDiagnosisFromScore(this.score);
-  // }
+
 }
 
 </script>
