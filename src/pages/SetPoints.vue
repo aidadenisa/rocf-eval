@@ -3,8 +3,9 @@
       
     <subpage-heading :title="'Please set the 5 reference points'"></subpage-heading>
 
-    <div class="flex row justify-end">
-        <q-btn flat style="background: #D2E1FF; color: #0857DE" class="reset-points-btn" @click="resetPoints">Reset points</q-btn>
+    <div class="points-button-bar flex row justify-end">
+        <rocf-button variant="secondary" class="reset-points-btn" @click="resetPoints" :block="false">Reset points</rocf-button>
+        <rocf-button variant="accent" :icon="'undo'" iconPosition="left" @click="undoPoint" :block="false">Undo</rocf-button>
     </div>
     <div class="canvas-container">
         <canvas id="overlay"></canvas>
@@ -289,6 +290,10 @@ export default {
         this.$store.dispatch('fetchPoints', data.points);
         this.$store.dispatch('fetchGammaImage', this.result);
         this.$router.push('/evaluate/threshold');
+    },
+    undoPoint() {
+        this.points.pop();
+        this.drawImage();
     }
   }
 }
@@ -303,5 +308,9 @@ img {
 canvas {
     width: 100%;
 }
-
+.points-button-bar .rocf-button {
+    margin-left: 8px; 
+    margin-bottom: 4px;
+    padding: 6px 12px;
+}
 </style>

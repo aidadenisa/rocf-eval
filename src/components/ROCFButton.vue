@@ -44,6 +44,7 @@ export default {
   border-radius: var(--rocf-card-radius);
   margin-bottom: 20px;
   position: relative;
+  border: 0px;
 }
 .q-icon {
   font-size: 26px;
@@ -65,6 +66,9 @@ export default {
   font-size: 20px;
 }
 
+.rocf-button:not(.display-block) {
+  width: initial;
+}
 .rocf-button:not(.display-block) .q-icon {
   position: relative;
   left: initial;
