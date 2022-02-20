@@ -13,7 +13,7 @@
       </div>
       <div class="field flex column">
         <div class="input-wrapper">
-          <input id="name" v-model="name" placeholder="Name" required>
+          <input id="name" v-model="name" :placeholder="nameTxt" required>
         </div>
       </div>
       <div class="field flex column">
@@ -29,18 +29,22 @@
 
       <div class="register-link">
         <router-link to="/login">
-          You already have an account? Login here!
+          {{loginLinkTxt}}
         </router-link>
       </div>
 
-      <rocf-button class="submit-button" @click="registerNewAccount">Create new account</rocf-button>
+      <rocf-button class="submit-button" @click="registerNewAccount">{{registerTxt}}</rocf-button>
 
+    </div>
+    <div class="language">
+      <lang-switch></lang-switch>
     </div>
   </q-page>
 </template>
 
 <script>
 import RocfButton from '../components/ROCFButton.vue';
+import LangSwitch from '../components/LangSwitch.vue';
 import api from '../services/api.js';
 
 export default {
@@ -53,7 +57,8 @@ export default {
     };
   },
   components: {
-    RocfButton
+    RocfButton,
+    LangSwitch
   },
   methods: {
     async registerNewAccount() {
@@ -84,6 +89,17 @@ export default {
         this.$router.push('/');
       }
 
+    }
+  },
+  computed: {
+    nameTxt() {
+      return this.$t('register_name');
+    },
+    loginLinkTxt() {
+      return this.$t('register_loginLink');
+    },
+    registerTxt() {
+      return this.$t('register_registerBtn');
     }
   }
 
@@ -149,5 +165,11 @@ label {
 .register-link a {
   color: var(--rocf-primary);
   padding: 10px 0 30px 0;
+}
+
+.language {
+  position: absolute;
+  bottom: 14px;
+  right: 0px;
 }
 </style>

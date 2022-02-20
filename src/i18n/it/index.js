@@ -1,6 +1,10 @@
 export default {
-  failed: 'lol',
-  success: 'lol2',
-  login_registerLink: "Non sei registrato? Vai qui!"
+  //Login Page
+  login_registerLink: "You don't have an account? Register here!11",
+  login_loginBtn: "Login11",
 
+  //Register Page
+  register_name: 'Name11',
+  register_loginLink: "You already have an account? Login here!11",
+  register_registerBtn: "Create new account111",
 }

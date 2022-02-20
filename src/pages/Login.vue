@@ -1,8 +1,6 @@
 <template>
   <q-page class="register-page flex column justify-center">
-    <div class="language">
-      <lang-switch></lang-switch>
-    </div>
+    
     <div class="logo">
       <h3> Evaluator </h3>
       <h2> ROCF </h2>
@@ -23,11 +21,14 @@
 
       <div class="register-link">
         <router-link to="/register">
-          {{loginRegisterLink}}
+          {{registerLinkTxt}}
         </router-link>
       </div>
-      <rocf-button type="password" class="submit-button" @click="login">Login</rocf-button>
+      <rocf-button type="password" class="submit-button" @click="login">{{loginTxt}}</rocf-button>
 
+    </div>
+    <div class="language">
+      <lang-switch></lang-switch>
     </div>
   </q-page>
 </template>
@@ -49,9 +50,12 @@ export default {
     LangSwitch,
   },
   computed: {
-    loginRegisterLink() {
+    registerLinkTxt() {
       return this.$t('login_registerLink');
-    }
+    },
+    loginTxt() {
+      return this.$t('login_loginBtn');
+    },
   },
   methods: {
     async login() {
@@ -142,7 +146,7 @@ label {
 
 .language {
   position: absolute;
-  top: 20px;
-  right: 0px;
+  bottom: 14px;
+  right: 0;
 }
 </style>
