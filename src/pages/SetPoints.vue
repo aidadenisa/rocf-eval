@@ -1,18 +1,18 @@
 <template>
   <q-page class="flex column justify-between">
       
-    <subpage-heading :title="'Please set the 5 reference points'"></subpage-heading>
+    <subpage-heading :title="titleTxt"></subpage-heading>
 
     <div class="points-button-bar flex row justify-end">
-        <rocf-button variant="secondary" class="reset-points-btn" @click="resetPoints" :block="false">Reset points</rocf-button>
-        <rocf-button variant="accent" :icon="'undo'" iconPosition="left" @click="undoPoint" :block="false">Undo</rocf-button>
+        <rocf-button variant="secondary" class="reset-points-btn" @click="resetPoints" :block="false">{{resetTxt}}</rocf-button>
+        <rocf-button variant="accent" :icon="'undo'" iconPosition="left" @click="undoPoint" :block="false">{{undoTxt}}</rocf-button>
     </div>
     <div class="canvas-container">
         <canvas id="overlay"></canvas>
     </div>
 
     <div class="save-points-btn">
-      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="savePoints">Extract Drawing</rocf-button>
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="savePoints">{{extractTxt}}</rocf-button>
     </div>
 
   </q-page>
@@ -203,7 +203,7 @@ export default {
         console.log(event);
 
         if(this.points.length >= 5) {
-            alert("You should set only 5 points!");
+            alert(this.manyPointsTxt);
             return;
         }
 
@@ -261,7 +261,7 @@ export default {
     },
     savePoints() {
         if(this.points.length !== 5) {
-            alert(`There are only ${this.points.length} points set. You should set 5 points!`);
+            alert(`${this.fewPoints1Txt} ${this.points.length} ${this.fewPoints2Txt}`);
             return;
         }
         this.info="I call this"
@@ -295,6 +295,29 @@ export default {
         this.points.pop();
         this.drawImage();
     }
+  },
+  computed: {
+    titleTxt() {
+        return this.$t('setPoints_title');
+    },
+    resetTxt() {
+        return this.$t('setPoints_reset');
+    },
+    undoTxt() {
+        return this.$t('setPoints_undo');
+    },
+    extractTxt() {
+        return this.$t('setPoints_extract');
+    },
+    fewPoints1Txt() {
+        return this.$t('setPoints_fewPoints1');
+    },
+    fewPoints2Txt() {
+        return this.$t('setPoints_fewPoints2');
+    },
+    manyPointsTxt() {
+        return this.$t('setPoints_manyPoints');
+    },
   }
 }
 </script>

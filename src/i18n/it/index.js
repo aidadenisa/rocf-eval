@@ -30,4 +30,18 @@ export default {
   //Camera Page
   camera_subtitle: "Take a photo with the patient’s drawing, as in the example below11",
   camera_takePictureBtn: "Take a picture11",
+
+  //Adjust Image Page
+  adjustImage_subtitle: 'Adjust photo by zooming or dragging11',
+  adjustImage_title: 'Do you want to use this photo?11',
+  adjustImage_takePhotoBtn: " Yes, use this photo11",
+
+  //Set Points Page
+  setPoints_title: 'Please set the 5 reference points11',
+  setPoints_reset: 'Reset points11',
+  setPoints_undo: 'Undo11',
+  setPoints_extract: 'Extract Drawing11',
+  setPoints_fewPoints1: 'There are only11',
+  setPoints_fewPoints2: 'points set. You should set 5 points!11',
+  setPoints_manyPoints: "You should set only 5 points!11",
 }

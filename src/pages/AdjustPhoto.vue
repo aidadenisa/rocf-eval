@@ -2,8 +2,8 @@
   <q-page class="flex column justify-between" >
     <div class="page-content">
       <subpage-heading 
-        :title="'Do you want to use this photo?'"
-        :subtitle="'Adjust photo by zooming or dragging'">
+        :title="titleTxt"
+        :subtitle="subtitleTxt">
       </subpage-heading>
 
       <div ref="editor" class="image-editor">
@@ -16,7 +16,7 @@
     </div>
     <div class="use-picture-btn ">
       <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="saveImage">
-        Yes, use this photo
+        {{usePhotoTxt}}
       </rocf-button>
     </div>
 
@@ -139,6 +139,17 @@ export default {
 
       i.src = imageSrc; 
     }
+  },
+  computed: {
+    titleTxt() {
+      return this.$t('adjustImage_title');
+    },
+    subtitleTxt() {
+      return this.$t('adjustImage_subtitle');
+    },
+    usePhotoTxt() {
+      return this.$t('adjustImage_takePhotoBtn');
+    },
   }
 }
 </script>
