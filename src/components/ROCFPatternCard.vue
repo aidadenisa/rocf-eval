@@ -21,6 +21,13 @@
             </roi-visualization>
           </div>
         </div>
+        <div class="label-box" @click.prevent="toggleEditMode">
+          The pattern is 
+          <span :class="['label', 'label-' + revisedPattern.chosenLabel]">
+            {{revisedPattern.chosenLabel}}
+            <q-icon name="edit" class="edit-icon"></q-icon>
+          </span>
+        </div>
         <div class="score-box">
           <div class="section-title">Score:</div>
           <q-slider
@@ -28,11 +35,13 @@
             :min="0"
             :max="2"
             :step="0.5"
+            track-size="10px"
+            thumb-size="35px"
             snap
             label
             label-always
             color="primary"
-            :disable="!editMode"
+            @change="setChosenScore"
           ></q-slider>
           <div v-if="editMode" class="edit-mode-labels flex row justify-between">
             <div v-for="(l, i) in labels" :key="i" :class="['new-label','label-' + l]" @click="setChosenLabel(i)" >{{l}}</div>
@@ -122,6 +131,10 @@ export default {
     },
     openROIChangeModal(roi) {
       this.$emit('open-modal-drawing', roi, this.homographyURL, this.index);
+    },
+    setChosenScore() {
+      this.editMode = true;
+      this.$emit('newConfig', this.index, this.revisedPattern);
     }
   },
   beforeMount() {
@@ -156,6 +169,16 @@ export default {
 }
 .section-title {
   margin-bottom: calc(1.5 * var(--rocf-content-margin-y));
+}
+
+.label-box {
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.label {
+  font-weight: 800;
 }
 
 .label.label-unknown {
@@ -200,5 +223,12 @@ export default {
 }
 .roi-visualization .original img {
   width: 100%;
+}
+
+.q-slider >>> .q-slider__thumb-container{
+  transform: scale(1.5);
+}
+.q-slider {
+  width: calc(100% - var(--rocf-card-padding));
 }
 </style>

@@ -41,7 +41,7 @@
               </table>
             </div>
             <div class="button-bar">
-              <rocf-button :icon="'edit'" :icon-position="'left'" variant="secondary" :block="false" size="small" @click="changeDiagnosis = true">
+              <rocf-button :icon="'edit'" :icon-position="'left'" variant="secondary" :block="true" size="small" @click="changeDiagnosis = true">
                 Change Diagnosis
               </rocf-button>
             </div>
