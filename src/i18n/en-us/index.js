@@ -10,4 +10,11 @@ export default {
   register_name: 'Name',
   register_loginLink: "You already have an account? Login here!",
   register_registerBtn: "Create new account",
+
+  //Dashboard:
+  dashboard_greeting: "Good Day,",
+  dashboard_doctorTitle: "Dr.",
+  dashboard_previousROCF: "Previous ROCF Evaluations",
+  dashboard_noROCF: "There are no ROCFs evaluations yet.",
+
 }

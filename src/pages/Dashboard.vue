@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex column flex-start">  
     <div class="rocf-header">
-      <h3 class="greeting">Good Morning,</h3>
-      <h2 class="doctor-name">Dr. {{user.name}}</h2>
+      <h3 class="greeting">{{greetingTxt}}</h3>
+      <h2 class="doctor-name">{{doctorTxt}} {{user.name}}</h2>
     </div>
     <router-link to="/evaluate/patient">
       <new-rocf></new-rocf>
@@ -11,12 +11,12 @@
     <!--Add here search bar-->
 
     <div class="rocf-evaluations">
-      <h3> Previous ROCF Evaluations </h3>
+      <h3> {{previousRocfTxt}} </h3>
 
       <rocf-list v-if="rocfs.length" :rocfs="rocfs"></rocf-list>
       <div v-else class="empty-list-rocfs">
         <br>
-        <h3>There are no ROCFs evaluations yet.</h3>
+        <h3>{{noRocfTxt}}</h3>
       </div>
     </div>
   </q-page>
@@ -77,6 +77,21 @@ export default {
     this.rocfs = this.$store.state.rocfEvaluations;
     this.checkIfEvaluationInProgress();
   },
+  computed: {
+    greetingTxt() {
+      return this.$t('dashboard_greeting');
+    },
+    doctorTxt() {
+      return this.$t('dashboard_doctorTitle');
+    },
+    previousRocfTxt() {
+      return this.$t('dashboard_previousROCF');
+    },
+    noRocfTxt() {
+      return this.$t('dashboard_noROCF');
+    },
+
+  }
 }
 </script>
 

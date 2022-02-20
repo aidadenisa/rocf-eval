@@ -39,7 +39,17 @@
           </q-item-section>
         </q-item>
 
-         <q-separator />
+        <q-separator />
+
+        <q-item clickable v-ripple @click="toggleLeftDrawer">
+          <q-item-section avatar>
+            <q-icon name="translate" />
+          </q-item-section>
+
+          <q-item-section>
+            <lang-switch></lang-switch>
+          </q-item-section>
+        </q-item>
 
         <q-item clickable v-ripple>
           <q-item-section avatar>
@@ -74,9 +84,13 @@
 </template>
 
 <script>
+import LangSwitch from '../components/LangSwitch.vue'
 
 export default {
   name: 'MainLayout',
+  components: {
+    LangSwitch
+  },
   data() {
     return {
       leftDrawerOpen: false,
@@ -125,5 +139,10 @@ export default {
 }
 .q-separator {
   margin-bottom: 20px;
+}
+.lang {
+  padding: initial;
+  font-size: initial;
+  font-weight: initial;
 }
 </style>
