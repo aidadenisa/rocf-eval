@@ -3,9 +3,13 @@
       
     <subpage-heading :title="titleTxt"></subpage-heading>
 
+    
     <div class="points-button-bar flex row justify-end">
-        <rocf-button variant="secondary" class="reset-points-btn" @click="resetPoints" :block="false">{{resetTxt}}</rocf-button>
-        <rocf-button variant="accent" :icon="'undo'" iconPosition="left" @click="undoPoint" :block="false">{{undoTxt}}</rocf-button>
+        <div class="example-points col-4">
+            <img src="../assets/img/example-points.png">
+        </div>
+        <rocf-button variant="secondary" class="reset-points-btn col-4" @click="resetPoints" :block="false">{{resetTxt}}</rocf-button>
+        <rocf-button variant="accent" class="col-4" :icon="'undo'" iconPosition="left" @click="undoPoint" :block="false">{{undoTxt}}</rocf-button>
     </div>
     <div class="canvas-container">
         <canvas id="overlay"></canvas>
@@ -335,5 +339,13 @@ canvas {
     margin-left: 8px; 
     margin-bottom: 4px;
     padding: 6px 12px;
+    font-size: 16px;
 }
+.points-button-bar {
+    flex-wrap: nowrap;
+    align-items: center;
+}
+/* .example-points {
+    max-width: 
+} */
 </style>

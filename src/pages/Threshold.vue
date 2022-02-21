@@ -77,6 +77,7 @@ export default {
                       : originalGammaImage;
       data.blockSize = this.ATblockSize;
       data.constant = this.ATconstant;
+      data.points = this.$store.state.points;
 
       let result = await api.put("/preprocessing", data);
       const image = result.image.replaceAll("'", "").slice(1);

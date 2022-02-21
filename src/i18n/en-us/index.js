@@ -47,7 +47,7 @@ export default {
   adjustImage_takePhotoBtn: " Yes, use this photo",
 
   //Set Points Page
-  setPoints_title: 'Please set the 5 reference points',
+  setPoints_title: 'Set the 5 reference points',
   setPoints_reset: 'Reset points',
   setPoints_undo: 'Undo',
   setPoints_extract: 'Extract Drawing',
