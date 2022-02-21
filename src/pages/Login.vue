@@ -49,19 +49,11 @@ export default {
     RocfButton,
     LangSwitch,
   },
-  computed: {
-    registerLinkTxt() {
-      return this.$t('login_registerLink');
-    },
-    loginTxt() {
-      return this.$t('login_loginBtn');
-    },
-  },
   methods: {
     async login() {
 
       if(this.email === '' || this.pass === '') {
-        alert('Please fill both email and password. Thank you!');
+        alert(this.emptyFieldTxt);
         return;
       }
 
@@ -69,7 +61,7 @@ export default {
         email: this.email,
         password: this.pass,
       }).catch(()=>{
-        alert("There has been an error logging you in. Please try again!");
+        alert(this.errorTxt);
       });
 
       if(result && result.token) {
@@ -79,7 +71,21 @@ export default {
       }
 
     }
-  }
+  },
+  computed: {
+    registerLinkTxt() {
+      return this.$t('login_registerLink');
+    },
+    loginTxt() {
+      return this.$t('login_loginBtn');
+    },
+    emptyFieldTxt() {
+      return this.$t('login_fieldEmptyAlert');
+    },
+    errorTxt() {
+      return this.$t('login_errorAlert');
+    },
+  },
 
 }
 </script>

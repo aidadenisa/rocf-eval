@@ -1,28 +1,28 @@
 <template>
   <q-page :class="['flex','column']"> 
-    <subpage-heading title="ROCF Patterns evaluation complete" subtitle="New ROCF Evaluation"></subpage-heading>
+    <subpage-heading :title="titleTxt"></subpage-heading>
     <div class="total-result">
       <g-card class="result-box flex column">
         <div class="flex row">
           <div class="patient-code col-9">
-            <div class="card-title">Patient Code</div>
+            <div class="card-title">{{patientCodeTxt}}</div>
             <div class="code">{{rocf.patientCode}}</div>
           </div>
           <div class="score-box col-3">
-            <div class="card-title"> Score </div>
+            <div class="card-title"> {{scoreTxt}} </div>
             <div class="score">{{score}}</div>
           </div>
         </div>
         <div v-if="rocf.diagnosis">
           <div v-if="!changeDiagnosis">
             <div v-if="rocf.diagnosis.doctorOverridden" class="diagnosis-overridden">
-              <div class="card-title"> Diagnosis </div>
+              <div class="card-title"> {{diagnosisTxt}} </div>
               <div class="diagnosis-card" :class="rocf.diagnosis.labelText">
                 {{label(rocf.diagnosis.labelNumber)}}
               </div>
             </div>
             <div v-else class="system-prediction diagnosis-box flex column items-center">
-              <div class="card-title"> Prediction </div>
+              <div class="card-title"> {{predictionTxt}} </div>
               <table class="chart">
                 <tr 
                   v-for="(prob, index) in rocf.diagnosis.probabilities" 
@@ -42,20 +42,20 @@
             </div>
             <div class="button-bar">
               <rocf-button :icon="'edit'" :icon-position="'left'" variant="secondary" :block="true" size="small" @click="changeDiagnosis = true">
-                Change Diagnosis
+                {{changeDiagnosisTxt}}
               </rocf-button>
             </div>
           </div>
           <div v-else class="diagnosis-box flex column items-center">
-            <div class="card-title"> Choose diagnosis </div>
+            <div class="card-title"> {{chooseDiagnosisTxt}} </div>
             <div class="diagnosis-choices">
-              <div :class="['normal', {selected: chosenDiagnosis == 'normal'}]" @click="chooseDiagnosis('normal')">Normal</div>
-              <div :class="['mci', {selected: chosenDiagnosis == 'mci'}]" @click="chooseDiagnosis('mci')">MCI</div>
-              <div :class="['dementia', {selected: chosenDiagnosis == 'dementia'}]" @click="chooseDiagnosis('dementia')">Dementia</div>
+              <div :class="['normal', {selected: chosenDiagnosis == 'normal'}]" @click="chooseDiagnosis('normal')">{{normalTxt}}</div>
+              <div :class="['mci', {selected: chosenDiagnosis == 'mci'}]" @click="chooseDiagnosis('mci')">{{mciTxt}}</div>
+              <div :class="['dementia', {selected: chosenDiagnosis == 'dementia'}]" @click="chooseDiagnosis('dementia')">{{dementiaTxt}}</div>
             </div>
             <div class="button-bar">
               <rocf-button :icon="'chevron_left'" :icon-position="'left'" @click="resetDiagnosisChange" :block="false" size="small" variant="secondary">
-                Back to predictions
+                {{backToPredTxt}}
               </rocf-button>
             </div>
           </div>
@@ -63,7 +63,7 @@
       </g-card>
     </div>
 
-    <h3 class="section-title">Patterns</h3>
+    <h3 class="section-title">{{patternsTxt}}</h3>
     <div class="pattern-list">
       <rocf-pattern 
         v-for="(pattern, index) in rocf.scores"
@@ -79,7 +79,7 @@
 
     <div class="save-revision" v-if="revised">
       <q-page-sticky expand position="bottom" class="flex column justify-center">
-        <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="saveRevision">Save revision</rocf-button>
+        <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="saveRevision">{{saveRevisionTxt}}</rocf-button>
       </q-page-sticky>
     </div>
 
@@ -91,7 +91,7 @@
     >
       <q-card class="column full-height full-width" >
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Zoom and adjust</div>
+          <div class="text-h6">{{adjustROITxt}}</div>
           <q-space/>
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -102,8 +102,8 @@
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
-          <rocf-button v-if="!changeROI" :icon="'edit'" :icon-position="'left'" variant="accent" @click="setupChangeROI">Change region of pattern</rocf-button>
-          <rocf-button v-if="changeROI" @click="changeROI = false">Save new region</rocf-button>
+          <rocf-button v-if="!changeROI" :icon="'edit'" :icon-position="'left'" variant="accent" @click="setupChangeROI">{{changeROITxt}}</rocf-button>
+          <rocf-button v-if="changeROI" @click="changeROI = false">{{saveROITxt}}</rocf-button>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -144,17 +144,6 @@ export default {
       zoomPatternIndex: null,
       changeROI: false,
     };
-  },
-  computed: {
-    score() {
-      return this.rocf.scores ? utils.sum(this.rocf.scores.map(pattern => pattern.score)) : 0;
-    },
-    activeImgFolder() {
-      return this.showOriginal ? 'original' : 'threshed';
-    }, 
-    docID(){
-      return this.$store.state.user.id;
-    }
   },
   methods: {
     async getThreshedImage() {
@@ -219,7 +208,7 @@ export default {
       this.updateROIsAfterRevision();
       let result = await api.post('/revision', this.rocf );
       console.log(result);
-      alert("The ROCF evaluation was saved successfully!");
+      alert(this.savedTxt);
       this.revised = false;
       this.changeDiagnosis = false;
     },
@@ -301,7 +290,70 @@ export default {
     async activeImgFolder() {
       await this.getThreshedImage();
     }
-  }
+  }, 
+  computed: {
+    score() {
+      return this.rocf.scores ? utils.sum(this.rocf.scores.map(pattern => pattern.score)) : 0;
+    },
+    activeImgFolder() {
+      return this.showOriginal ? 'original' : 'threshed';
+    }, 
+    docID(){
+      return this.$store.state.user.id;
+    },
+
+    titleTxt() {
+      return this.$t('rocfResult_title');
+    },
+    patientCodeTxt() {
+      return this.$t('rocfResult_patientCode');
+    },
+    scoreTxt() {
+      return this.$t('rocfResult_score');
+    },
+    diagnosisTxt() {
+      return this.$t('rocfResult_diagnosis');
+    },
+    predictionTxt() {
+      return this.$t('rocfResult_prediction');
+    },
+    changeDiagnosisTxt() {
+      return this.$t('rocfResult_changeDiagBtn');
+    },
+    chooseDiagnosisTxt() {
+      return this.$t('rocfResult_chooseDiagBtn');
+    },
+    normalTxt() {
+      return this.$t('rocfResult_normal');
+    },
+    mciTxt() {
+      return this.$t('rocfResult_mci');
+    },
+    dementiaTxt() {
+      return this.$t('rocfResult_dementia');
+    },
+    backToPredTxt() {
+      return this.$t('rocfResult_backToPredBtn');
+    },
+    patternsTxt() {
+      return this.$t('rocfResult_patterns');
+    },
+    saveRevisionTxt() {
+      return this.$t('rocfResult_saveRevisionBtn');
+    },
+    adjustROITxt() {
+      return this.$t('rocfResult_adjustRegion');
+    },
+    changeROITxt() {
+      return this.$t('rocfResult_changeRegion');
+    },
+    saveROITxt() {
+      return this.$t('rocfResult_saveRegion');
+    },
+    savedTxt() {
+      return this.$t('rocfResult_saved');
+    },
+  },
 }
 
 </script>

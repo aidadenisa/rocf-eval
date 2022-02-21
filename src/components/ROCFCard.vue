@@ -72,6 +72,7 @@ export default {
 }
 .result .diagnosis {
   font-weight: 600;
+  text-transform: uppercase;
 }
 .rocf-card:not(.scores-missing) .result.normal {
   background-color: var(--rocf-normal);

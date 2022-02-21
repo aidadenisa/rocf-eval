@@ -63,7 +63,7 @@ export default {
   methods: {
     async registerNewAccount() {
       if(this.pass1 !== this.pass2) {
-        alert('The passwords do not match. Please insert them again!');
+        alert(this.passMismatchTxt);
         this.pass1 = '';
         this.pass2 = '';
         
@@ -71,7 +71,7 @@ export default {
       }
 
       if(this.email === '' || this.name === '') {
-        alert('Please fill in all the data needed. Thank you!');
+        alert(this.missingInfoTxt);
         return;
       }
 
@@ -80,7 +80,7 @@ export default {
         name: this.name,
         password: this.pass1,
       }).catch(()=>{
-        alert("There has been an error creating your account. Please try again!");
+        alert(this.errorTxt);
       });
 
       if(result && result.token) {
@@ -100,6 +100,15 @@ export default {
     },
     registerTxt() {
       return this.$t('register_registerBtn');
+    },
+    passMismatchTxt() {
+      return this.$t('register_passMismatchAlert');
+    },
+    missingInfoTxt() {
+      return this.$t('register_missingInfoAlert');
+    },
+    errorTxt() {
+      return this.$t('register_errorAlert');
     }
   }
 

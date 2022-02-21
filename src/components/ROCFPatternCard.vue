@@ -3,7 +3,7 @@
     <g-card class="pattern-box">
       <div class="heading flex justify-between">
         <div class="title">
-          Pattern {{indexPretty}}
+          {{patternTxt}} {{indexPretty}}
         </div>
         <div :class="['label', 'label-' + revisedPattern.chosenLabel]" @click.prevent="toggleEditMode">
           <q-icon name="edit" class="edit-icon"></q-icon>
@@ -22,14 +22,14 @@
           </div>
         </div>
         <div class="label-box" @click.prevent="toggleEditMode">
-          The pattern is 
+          {{patternIsTxt}} 
           <span :class="['label', 'label-' + revisedPattern.chosenLabel]">
             {{revisedPattern.chosenLabel}}
             <q-icon name="edit" class="edit-icon"></q-icon>
           </span>
         </div>
         <div class="score-box">
-          <div class="section-title">Score:</div>
+          <div class="section-title">{{scoreTxt}}:</div>
           <q-slider
             v-model="revisedPattern.chosenScore"
             :min="0"
@@ -88,17 +88,6 @@ export default {
     GCard,
     RoiVisualization
   },
-  computed: {
-    indexPretty(){
-      return this.index + 1;
-    },
-    label() {
-      return utils.getLabelFromScore(this.pattern);
-    },
-    originalPatternURL() {
-      return require(`../assets/img/patterns/P${this.index + 1}.png`);
-    }
-  },
   methods: {
     setRevisedPattern() {
       this.revisedPattern = {
@@ -139,7 +128,27 @@ export default {
   },
   beforeMount() {
     this.setRevisedPattern();
-  }
+  },
+  computed: {
+    indexPretty(){
+      return this.index + 1;
+    },
+    label() {
+      return utils.getLabelFromScore(this.pattern);
+    },
+    originalPatternURL() {
+      return require(`../assets/img/patterns/P${this.index + 1}.png`);
+    },
+    patternTxt() {
+      return this.$t('rocfPattern_pattern');
+    },
+    patternIsTxt() {
+      return this.$t('rocfPattern_patternIs');
+    },
+    scoreTxt() {
+      return this.$t('rocfPattern_score');
+    },
+  },
 }
 
 </script>

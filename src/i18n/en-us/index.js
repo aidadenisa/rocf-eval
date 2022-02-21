@@ -5,17 +5,25 @@ export default {
   //Login Page
   login_registerLink: "You don't have an account? Register here!",
   login_loginBtn: "Login",
+  login_fieldEmptyAlert: 'Please fill both email and password. Thank you!',
+  login_errorAlert: "There has been an error logging you in. Please try again!",
 
   //Register Page
   register_name: 'Name',
   register_loginLink: "You already have an account? Login here!",
   register_registerBtn: "Create new account",
+  register_passMismatchAlert: 'The passwords do not match. Please insert them again!',
+  register_missingInfoAlert: 'Please fill in all the data needed. Thank you!',
+  register_errorAlert: "There has been an error creating your account. Please try again!",
 
   //Dashboard:
-  dashboard_greeting: "Good Day,",
+  dashboard_greeting: "Good Day",
   dashboard_doctorTitle: "Dr.",
   dashboard_previousROCF: "Previous ROCF Evaluations",
   dashboard_noROCF: "There are no ROCFs evaluations yet.",
+  dashboard_rocfInProgressAlert: "We are analysing a ROCF... It should be ready in a few minutes!",
+  dashboard_rocfReady1Alert: "The ROCF for patient",
+  dashboard_rocfReady2Alert: "is ready!",
 
   //NewROCF: 
   newRocf_evaluate: "Evaluate new ROCF",
@@ -46,4 +54,37 @@ export default {
   setPoints_fewPoints1: 'There are only',
   setPoints_fewPoints2: 'points set. You should set 5 points!',
   setPoints_manyPoints: "You should set only 5 points!",
+
+  //Threshold Page
+  threshold_subtitle: 'New ROCF Evaluation',
+  threshold_title: 'Move the threshold to better extract the drawing',
+  threshold_lessDetails: 'Less details',
+  threshold_moreDetails: 'More details',
+  threshold_darker: 'Darker',
+  threshold_lighter: 'Lighter',
+  threshold_analyseBtn: 'Analyse the drawing',
+
+  //ROCF Result Page
+  rocfResult_title: 'ROCF Patterns evaluation',
+  rocfResult_patientCode: 'Patient Code',
+  rocfResult_score: 'Score',
+  rocfResult_diagnosis: 'Diagnosis',
+  rocfResult_prediction: 'Prediction',
+  rocfResult_changeDiagBtn: 'Change Diagnosis',
+  rocfResult_chooseDiagBtn: 'Choose diagnosis',
+  rocfResult_normal: 'Normal',
+  rocfResult_mci: 'MCI',
+  rocfResult_dementia: 'Dementia',
+  rocfResult_backToPredBtn: 'Back to predictions',
+  rocfResult_patterns: 'Patterns',
+  rocfResult_saveRevisionBtn: 'Save revision',
+  rocfResult_adjustRegion: 'Adjust pattern region',
+  rocfResult_changeRegion: 'Change region of pattern',
+  rocfResult_saveRegion: 'Save new region',
+  rocfResult_saved: "The ROCF evaluation was saved successfully!",
+
+  //ROCF PATTERN
+  rocfPattern_pattern: 'Pattern',
+  rocfPattern_patternIs: 'The pattern is',
+  rocfPattern_score: 'Score',
 }

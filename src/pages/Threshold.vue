@@ -1,14 +1,14 @@
 <template>
   <q-page class="flex column justify-between">
-    <subpage-heading :subtitle="'New ROCF Evaluation'" :title="'Move the threshold to better extract the drawing'"></subpage-heading>
+    <subpage-heading :subtitle="subtitleTxt" :title="titleTxt"></subpage-heading>
     
     <div class="threshold-image">
       <img :src="imageSrc">
     </div>
 
     <div class="flex row justify-between">
-      <label>Less details</label>
-      <label>More details</label>
+      <label>{{lessDetailsTxt}}</label>
+      <label>{{moreDetailsTxt}}</label>
     </div>
     <q-slider
       @change="changeImage"
@@ -22,8 +22,8 @@
     ></q-slider>
 
     <div class="flex row justify-between">
-      <label>Darker</label>
-      <label>Lighter</label>
+      <label>{{darkerTxt}}</label>
+      <label>{{lighterTxt}}</label>
     </div>
     <q-slider
       @change="changeImage"
@@ -37,7 +37,7 @@
     ></q-slider>
     
     <div class="take-picture-btn">
-      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="analyseImage">Analyse the drawing</rocf-button>
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="analyseImage">{{analyseTxt}}</rocf-button>
     </div>
 
   </q-page>
@@ -109,6 +109,30 @@ export default {
       this.$router.push('/');
     }
   },
+  computed: {
+    subtitleTxt() {
+      return this.$t('threshold_subtitle');
+    },
+    titleTxt() {
+      return this.$t('threshold_title');
+    },
+    lessDetailsTxt() {
+      return this.$t('threshold_lessDetails');
+    },
+    moreDetailsTxt() {
+      return this.$t('threshold_moreDetails');
+    },
+    darkerTxt() {
+      return this.$t('threshold_darker');
+    },
+    lighterTxt() {
+      return this.$t('threshold_lighter');
+    },
+    analyseTxt() {
+      return this.$t('threshold_analyseBtn');
+    },
+
+  }
 }
 </script>
 

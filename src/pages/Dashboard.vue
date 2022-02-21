@@ -45,7 +45,7 @@ export default {
     checkIfEvaluationInProgress() {
       let evaluationInProgressId = localStorage.getItem('evaluationInProgressId');
       if(evaluationInProgressId) {
-        alert("We are analysing a ROCF... It should be ready in a few minutes!");
+        alert(this.rocfInProgressTxt);
         this.setIntervalForRetrievingResults(evaluationInProgressId);
       }
     },
@@ -58,7 +58,7 @@ export default {
           localStorage.removeItem('evaluationInProgressId');
           clearInterval(retrieveResultsInterval);
           this.$store.dispatch('fetchNewRocfToArray', result);
-          alert(`The ROCF for patient ${result.patientCode} is ready!`);
+          alert(`${this.rocfReady1Txt} ${result.patientCode} ${this.rocfReady2Txt}`);
         }
       }, 15000);
     },
@@ -89,6 +89,15 @@ export default {
     },
     noRocfTxt() {
       return this.$t('dashboard_noROCF');
+    },
+    rocfInProgressTxt() {
+      return this.$t('dashboard_rocfInProgressAlert');
+    },
+    rocfReady1Txt() {
+      return this.$t('dashboard_rocfReady1Alert');
+    },
+    rocfReady2Txt() {
+      return this.$t('dashboard_rocfReady2Alert');
     },
 
   }
