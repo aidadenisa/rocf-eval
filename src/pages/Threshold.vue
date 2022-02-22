@@ -71,6 +71,7 @@ export default {
     async getNewThresholdedImage() {
       let data = {};
       const originalGammaImage = this.$store.state.gammaImage;
+      if(!originalGammaImage) return;
       const index = originalGammaImage.indexOf('data:image/png;base64,');
       data.imageb64 = ( index > -1) 
                       ? originalGammaImage.slice(('data:image/png;base64,').length)
@@ -87,6 +88,12 @@ export default {
     async changeImage() {
       const image = await this.getNewThresholdedImage();
       this.imageSrc = `data:image/png;base64,${image}`;
+    },
+    resetStorage() {
+      this.$store.dispatch('fetchImage', '');
+      this.$store.dispatch('fetchPoints', []);
+      this.$store.dispatch('fetchGammaImage', '');
+      this.$store.dispatch('fetchPatientCode', '');
     },
     async analyseImage() {
       let data = {};
@@ -107,6 +114,7 @@ export default {
       // alert(result)
       this.info = result;
       localStorage.setItem('evaluationInProgressId', result._id);
+      this.resetStorage();
       this.$router.push('/');
     }
   },
