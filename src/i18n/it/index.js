@@ -37,7 +37,9 @@ export default {
   patientCode_scanButton: "Scan Image11",
 
   //Camera Page
-  camera_subtitle: "Take a photo with the patient’s drawing, as in the example below11",
+  camera_title: "Take a photo of the patient’s drawing11",
+  camera_subtitle: "New ROCF Evaluation11",
+  camera_info: "Take a picture with the drawing of the patient in the center of the camera preview. You don't need to photograph also the Rey-Osterrieth model.11",
   camera_takePictureBtn: "Take a picture11",
 
   //Adjust Image Page
@@ -47,6 +49,7 @@ export default {
 
   //Set Points Page
   setPoints_title: 'Please set the 5 reference points11',
+  setPoints_info: 'You need to indicate on the drawing which are the 5 external points, starting with the corner of the outer rectangle on the top left, then moving clockwise to the corner of the rectangle on the top right, following with the top corner of the rhomb, then the bottom right corner of the outer rectangle, and then the bottom left corner of the outer rectangle. The points are also represened in the model present in the page.11',
   setPoints_reset: 'Reset points11',
   setPoints_undo: 'Undo11',
   setPoints_extract: 'Extract Drawing11',
@@ -57,6 +60,7 @@ export default {
   //Threshold Page
   threshold_subtitle: 'New ROCF Evaluation11',
   threshold_title: 'Move the threshold to better extract the drawing11',
+  threshold_info: 'The algorithm needs to use a pure black and white drawing in order to identify and score the patterns. You can move the thresholds to see how the drawing changes and choose the best version. The more clear the lines, the better. <br><br> If you do not see your drawing anymore, you probably set the points in a wrong order. Go back to set the 5 reference points again.11',
   threshold_lessDetails: 'Less details11',
   threshold_moreDetails: 'More details11',
   threshold_darker: 'Darker11',
@@ -86,5 +90,8 @@ export default {
   rocfPattern_pattern: 'Pattern11',
   rocfPattern_patternIs: 'The pattern is11',
   rocfPattern_score: 'Score11',
+
+  //Subpage Heading
+  subpageHeading_dialogTitle: 'More information11',
 
 }

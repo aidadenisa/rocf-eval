@@ -1,6 +1,6 @@
 <template>
   <q-page class="camera-page flex column justify-between">
-    <subpage-heading :subtitle="subtitleTxt"></subpage-heading>
+    <subpage-heading :subtitle="subtitleTxt" :title="titleTxt"></subpage-heading>
 
     <div class="take-picture-btn">
       <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="takePicture">{{takePictureTxt}}</rocf-button>
@@ -82,8 +82,14 @@ export default {
     CameraPreview.stopCamera();
   },
   computed: {
+    titleTxt() {
+      return this.$t('camera_title');
+    },
     subtitleTxt() {
       return this.$t('camera_subtitle');
+    },
+    infoTxt() {
+      return this.$t('camera_info');
     },
     takePictureTxt() {
       return this.$t('camera_takePictureBtn');

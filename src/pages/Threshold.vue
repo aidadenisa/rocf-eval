@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex column justify-between">
-    <subpage-heading :subtitle="subtitleTxt" :title="titleTxt"></subpage-heading>
+    <subpage-heading :subtitle="subtitleTxt" :title="titleTxt" :info="infoTxt"></subpage-heading>
     
     <div class="threshold-image">
       <img :src="imageSrc">
@@ -116,6 +116,9 @@ export default {
     },
     titleTxt() {
       return this.$t('threshold_title');
+    },
+    infoTxt() {
+      return this.$t('threshold_info');
     },
     lessDetailsTxt() {
       return this.$t('threshold_lessDetails');

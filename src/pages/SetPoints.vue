@@ -1,11 +1,11 @@
 <template>
   <q-page class="flex column justify-between">
       
-    <subpage-heading :title="titleTxt"></subpage-heading>
+    <subpage-heading :title="titleTxt" :info="infoTxt"></subpage-heading>
 
     
     <div class="points-button-bar flex row justify-end">
-        <div class="example-points col-4">
+        <div class="example-points col-4" @click="zoomPointsImage">
             <img src="../assets/img/example-points.png">
         </div>
         <rocf-button variant="secondary" class="reset-points-btn col-4" @click="resetPoints" :block="false">{{resetTxt}}</rocf-button>
@@ -14,6 +14,24 @@
     <div class="canvas-container">
         <canvas id="overlay"></canvas>
     </div>
+
+    <q-dialog v-model="showImageDialog" persistent>
+      <q-card>
+        <q-bar>
+          <div>Order of Points</div>
+
+          <q-space />
+
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+
+        <q-card-section>
+          <img src="../assets/img/example-points.png">
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
     <div class="save-points-btn">
       <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="savePoints">{{extractTxt}}</rocf-button>
@@ -56,7 +74,8 @@ export default {
       },
       radius: 20,
       points: [],
-      result: ''
+      result: '',
+      showImageDialog: false
     }
   },
   beforeMount() {
@@ -298,11 +317,17 @@ export default {
     undoPoint() {
         this.points.pop();
         this.drawImage();
+    },
+    zoomPointsImage() {
+        this.showImageDialog = true;
     }
   },
   computed: {
     titleTxt() {
         return this.$t('setPoints_title');
+    },
+    infoTxt() {
+        return this.$t('setPoints_info');
     },
     resetTxt() {
         return this.$t('setPoints_reset');
