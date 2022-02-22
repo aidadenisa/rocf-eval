@@ -41,7 +41,7 @@
 
         <q-separator />
 
-        <q-item clickable v-ripple @click="toggleLeftDrawer">
+        <q-item clickable v-ripple @click.stop="toggleLeftDrawer">
           <q-item-section avatar>
             <q-icon name="translate" />
           </q-item-section>
@@ -57,7 +57,7 @@
           </q-item-section>
 
           <q-item-section>
-            About the app
+            {{aboutTxt}}
           </q-item-section>
         </q-item>
 
@@ -67,7 +67,7 @@
           </q-item-section>
 
           <q-item-section>
-            Logout
+            {{logoutTxt}}
           </q-item-section>
         </q-item>
 
@@ -114,6 +114,14 @@ export default {
   },
   updated() {
     this.user = this.$store.state.user;
+  },
+  computed: {
+    aboutTxt() {
+      return this.$t('mainLayout_about');
+    },
+    logoutTxt() {
+      return this.$t('mainLayout_logout');
+    },
   }
 }
 </script>

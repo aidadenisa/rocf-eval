@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex column flex-start">  
     <div class="rocf-header">
-      <h3 class="greeting">{{greetingTxt}}</h3>
+      <h3 class="greeting">{{greetingTxt}},</h3>
       <h2 class="doctor-name">{{doctorTxt}} {{user.name}}</h2>
     </div>
     <router-link to="/evaluate/patient">

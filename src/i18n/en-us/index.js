@@ -95,4 +95,10 @@ export default {
   //Subpage Heading
   subpageHeading_dialogTitle: 'More information',
 
+  //Main Layout (Sidebar Menu)
+  mainLayout_about: 'About the app',
+  mainLayout_logout: 'Logout',
+
+  //LangSwitch
+  langSwitch_change: 'Change to',
 }
