@@ -4,11 +4,11 @@
     <div class="total-result">
       <g-card class="result-box flex column">
         <div class="flex row">
-          <div class="patient-code col-9">
+          <div class="patient-code col-8">
             <div class="card-title">{{patientCodeTxt}}</div>
             <div class="code">{{rocf.patientCode}}</div>
           </div>
-          <div class="score-box col-3">
+          <div class="score-box col-4">
             <div class="card-title"> {{scoreTxt}} </div>
             <div class="score">{{score}}</div>
           </div>
@@ -102,8 +102,9 @@
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
-          <rocf-button v-if="!changeROI" :icon="'edit'" :icon-position="'left'" variant="accent" @click="setupChangeROI">{{changeROITxt}}</rocf-button>
-          <rocf-button v-if="changeROI" @click="changeROI = false">{{saveROITxt}}</rocf-button>
+          <rocf-button v-if="!zoomROI.length && !changeROI " :icon="'edit'" :icon-position="'left'" variant="accent" @click="addNewROI">{{addNewROITxt}}</rocf-button>
+          <rocf-button v-if="zoomROI.length && !changeROI" :icon="'edit'" :icon-position="'left'" variant="accent" @click="setupChangeROI">{{changeROITxt}}</rocf-button>
+          <rocf-button v-if="zoomROI.length && changeROI" @click="changeROI = false">{{saveROITxt}}</rocf-button>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -278,7 +279,11 @@ export default {
       this.zoomROI = [];
       this.zoomPatternIndex = null;
       this.changeROI = false;
-    }
+    },
+    addNewROI() {
+      this.zoomROI = [[[300, 200], [800, 200], [800, 600], [300, 600]]];
+      this.changeROI = true;
+    },
   },
   async beforeMount() {
     this.rocf = this.$store.getters.getROCF(this.$route.params.id);
@@ -352,6 +357,9 @@ export default {
     },
     savedTxt() {
       return this.$t('rocfResult_saved');
+    },
+    addNewROITxt() {
+      return this.$t('rocfResult_newROI');
     },
   },
 }

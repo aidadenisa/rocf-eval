@@ -301,7 +301,9 @@ export default {
       setTimeout(()=>{
         this.setupCanvas();
       }, 500);
-      
+    },
+    zoomROI() {
+      this.setupCanvas();
     },
     changeROI(value) {
       if(value) {
