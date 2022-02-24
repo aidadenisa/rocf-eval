@@ -86,6 +86,7 @@ export default {
   rocfResult_changeRegion: 'Change region of pattern',
   rocfResult_saveRegion: 'Save new region',
   rocfResult_saved: "The ROCF evaluation was saved successfully!",
+  rocfResult_newROI: "Add new area",
 
   //ROCF PATTERN
   rocfPattern_pattern: 'Pattern',
@@ -100,5 +101,5 @@ export default {
   mainLayout_logout: 'Logout',
 
   //LangSwitch
-  langSwitch_change: 'Change to',
+  langSwitch_change: 'Passa a',
 }
