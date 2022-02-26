@@ -89,7 +89,7 @@
       full-width
       @hide="resetDialog"
     >
-      <q-card class="column full-height full-width" >
+      <q-card class="column full-height full-width" @click.stop>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">{{adjustROITxt}}</div>
           <q-space/>
@@ -101,10 +101,10 @@
           </roi-change-modal>
         </q-card-section>
 
-        <q-card-actions align="right" class="bg-white text-teal">
-          <rocf-button v-if="!zoomROI.length && !changeROI " :icon="'edit'" :icon-position="'left'" variant="accent" @click="addNewROI">{{addNewROITxt}}</rocf-button>
-          <rocf-button v-if="zoomROI.length && !changeROI" :icon="'edit'" :icon-position="'left'" variant="accent" @click="setupChangeROI">{{changeROITxt}}</rocf-button>
-          <rocf-button v-if="zoomROI.length && changeROI" @click="changeROI = false">{{saveROITxt}}</rocf-button>
+        <q-card-actions align="right" class="bg-white text-teal" @click.stop>
+          <rocf-button v-if="!zoomROI.length && !changeROI " :icon="'edit'" :icon-position="'left'" variant="accent" @click.prevent="addNewROI">{{addNewROITxt}}</rocf-button>
+          <rocf-button v-if="zoomROI.length && !changeROI" :icon="'edit'" :icon-position="'left'" variant="accent" @click.prevent="setupChangeROI">{{changeROITxt}}</rocf-button>
+          <rocf-button v-if="zoomROI.length && changeROI" @click.prevent="changeROI = false">{{saveROITxt}}</rocf-button>
         </q-card-actions>
       </q-card>
     </q-dialog>
