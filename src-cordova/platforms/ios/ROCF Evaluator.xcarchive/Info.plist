@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ApplicationProperties</key>
+	<dict>
+		<key>ApplicationPath</key>
+		<string>Applications/ROCF Evaluator.app</string>
+		<key>Architectures</key>
+		<array>
+			<string>arm64</string>
+		</array>
+		<key>CFBundleIdentifier</key>
+		<string>blog.aida.rocf.app</string>
+		<key>CFBundleShortVersionString</key>
+		<string>0.0.1</string>
+		<key>CFBundleVersion</key>
+		<string>0.0.1</string>
+		<key>SigningIdentity</key>
+		<string>Apple Development: aida.denisa@gmail.com (F622DV97NB)</string>
+		<key>Team</key>
+		<string>273J2WSDQV</string>
+	</dict>
+	<key>ArchiveVersion</key>
+	<integer>2</integer>
+	<key>CreationDate</key>
+	<date>2022-02-27T20:08:24Z</date>
+	<key>Name</key>
+	<string>ROCF Evaluator</string>
+	<key>SchemeName</key>
+	<string>ROCF Evaluator</string>
+</dict>
+</plist>
