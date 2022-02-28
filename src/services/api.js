@@ -1,6 +1,6 @@
 // require('dotenv').config({ path: '@/../.env' })
 // const VUE_APP_API_LINK = 'https://powerful-springs-55155.herokuapp.com';
-const VUE_APP_API_LINK = 'http://142.93.166.62:5001';
+const VUE_APP_API_LINK = 'https://api.rocf.aida.blog';
 // import * as Vue from 'vue'
 
 const api = {
