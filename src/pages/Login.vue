@@ -60,7 +60,7 @@ export default {
       let result = await api.post('/login', {
         email: this.email,
         password: this.pass,
-      }).catch(()=>{
+      }).catch((error)=>{
         alert(this.errorTxt);
       });
 

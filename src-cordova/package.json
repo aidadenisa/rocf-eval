@@ -25,7 +25,9 @@
       "cordova-plugin-camera": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
-      "cordova-plugin-camera-preview": {}
+      "cordova-plugin-camera-preview": {},
+      "@globules-io/cordova-plugin-ios-xhr": {},
+      "cordova-plugin-cors": {}
     },
     "platforms": [
       "android",

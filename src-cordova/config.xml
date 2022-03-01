@@ -22,8 +22,9 @@
         <preference name="DisallowOverscroll" value="true" />
         <preference name="UIWebViewBounce" value="false" />
     </platform>
-    <allow-navigation href="about:*" />
+    <allow-navigation href="*" />
     <config-file overwrite="true" parent="NSCameraUsageDescription" platform="ios" target="*-Info.plist">
         <string>Allow the app to use your camera</string>
     </config-file>
+    <allow-navigation href="about:*" />
 </widget>
