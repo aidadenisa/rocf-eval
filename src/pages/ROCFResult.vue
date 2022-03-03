@@ -207,7 +207,10 @@ export default {
       this.updateScoresAfterRevision();
       this.updateDiagnosisAfterRevision();
       this.updateROIsAfterRevision();
-      let result = await api.post('/revision', this.rocf );
+      let result = await api.post('/revision', this.rocf ).catch((error) => {
+        console.log(error);
+        alert(this.errorTxt)
+      });
       console.log(result);
       alert(this.savedTxt);
       this.revised = false;
@@ -291,6 +294,13 @@ export default {
     this.rocf.revisedDiagnosis = this.createCloneOfDiagnosis();
     await this.getThreshedImage();
   },
+  beforeRouteLeave (to, from, next) {
+    if(this.revised && !confirm(this.alertTxt)) {
+      next(false);
+    } else {
+      next();
+    }
+  },
   watch: {
     async activeImgFolder() {
       await this.getThreshedImage();
@@ -360,6 +370,12 @@ export default {
     },
     addNewROITxt() {
       return this.$t('rocfResult_newROI');
+    },
+    errorTxt() {
+      return this.$t('rocfResult_saveError');
+    },
+    alertTxt() {
+      return this.$t('rocfResult_alertExit');
     },
   },
 }

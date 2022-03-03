@@ -12,13 +12,34 @@
 import utils from '../services/utils.js'
 
 export default {
+  props: {
+    backAlert: {
+      type: Boolean,
+      default: false,
+    },
+    backAlertMessage: {
+      type: String,
+      default: 'Are you sure you want to go back?',
+    },
+  },
   methods: {
     handleBackButton() {
-      if (utils.hasHistory()) {
-        this.$router.go(-1);
+      if (this.backAlert) {
+        if (confirm(backAlertMessage)) {
+          if (utils.hasHistory()) {
+            this.$router.go(-1);
+          } else {
+            this.$router.push('/');
+          }
+        }
       } else {
-        this.$router.push('/');
+        if (utils.hasHistory()) {
+          this.$router.go(-1);
+        } else {
+          this.$router.push('/');
+        }
       }
+      
     }
   }
 }

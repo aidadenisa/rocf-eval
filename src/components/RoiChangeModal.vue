@@ -61,20 +61,21 @@ export default {
         this.baseImage = new Image();
         this.baseImage.src = this.zoomImageURL ;
 
-        this.canvas.width = window.screen.width * window.devicePixelRatio;
-        this.canvas.height = 0.9 * window.screen.height * window.devicePixelRatio;
-
-        console.log("canvas dim: ", this.canvas.width, this.canvas.height)
-
-        this.aspectRatio = this.canvas.width / this.canvas.height;
-
-        this.currentPointInOrigin = { x: - this.canvas.width / 4, y: 0 }
-
+        
         this.canvas.addEventListener('touchstart', this.touchStartHandler);
         this.canvas.addEventListener('touchmove', this.moveHandler);
         this.canvas.addEventListener('touchend', this.touchEndHandler);
 
         this.baseImage.onload = () => {
+            this.canvas.width = window.screen.width * window.devicePixelRatio;
+        
+            this.canvas.height = Math.min(this.baseImage.height, 0.9 * window.screen.height) * window.devicePixelRatio;
+
+            this.currentPointInOrigin = { x: - this.canvas.width / 4, y: 0 }
+
+            console.log("canvas dim: ", this.canvas.width, this.canvas.height)
+
+            this.aspectRatio = this.canvas.width / this.canvas.height;
             this.dimensions = {
                 width: this.baseImage.width * this.zoom,
                 height: this.baseImage.height * this.zoom,
@@ -258,7 +259,7 @@ export default {
       for (let r=0; r<this.draggingPoints.length; r++) {
         for (let i=0; i<this.draggingPoints[r].length; i++) {
           const dist = Math.sqrt( Math.pow((point.x-this.draggingPoints[r][i][0]), 2) + Math.pow((point.y-this.draggingPoints[r][i][1]), 2) );
-          if (dist < (this.radius * this.zoom + 10) && dist < min_dist) {  
+          if (dist < (this.radius * this.zoom + 10 * this.zoom) && dist < min_dist) {  
             min_dist = dist;
             min_point = i;
             min_index = r;

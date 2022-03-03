@@ -86,6 +86,8 @@ export default {
   rocfResult_saveRegion: 'Salva la nuova area',
   rocfResult_saved: "La valutazione ROCF è stata salvata correttamente.",
   rocfResult_newROI: "Definisci nuova area",
+  rocfResult_saveError: "There has been an error while saving your revision. Please try again.",
+  rocfResult_alertExit: "Are you sure you want to leave? You have unsaved changes!",
 
   //ROCF PATTERN
   rocfPattern_pattern: 'Pattern',

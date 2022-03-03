@@ -1,6 +1,6 @@
 <template>
   <div class="roi-canvas">
-    <img :src="homographyURL">
+    <img :src="homographyURL" ref="drawing" class="drawing-image">
     <canvas ref="roi" @click="$emit('click-on-canvas', roi)"></canvas>
   </div>
 </template>
@@ -37,12 +37,13 @@ export default {
       this.baseImage = new Image();
       this.baseImage.src = this.homographyURL;
 
-      this.canvas.width = window.screen.width * window.devicePixelRatio;
-      this.canvas.height = 400;
+      this.canvas.width =this.$el.querySelector('img.drawing-image').width * window.devicePixelRatio;
+
+      this.canvas.height = this.$el.querySelector('img.drawing-image').height * window.devicePixelRatio;
 
       this.ratio = this.canvas.width / this.baseImage.width;
 
-      this.drawImage();
+      this.drawImage();      
       
     },
     drawImage() {

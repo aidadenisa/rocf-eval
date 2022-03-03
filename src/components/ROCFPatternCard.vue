@@ -43,7 +43,7 @@
             color="primary"
             @change="setChosenScore"
           ></q-slider>
-          <div v-if="editMode" class="edit-mode-labels flex row justify-between">
+          <div v-if="editMode" class="edit-mode-labels flex row ">
             <div v-for="(l, i) in labels" :key="i" :class="['new-label','label-' + l]" @click="setChosenLabel(i)" >{{l}}</div>
           </div>
         </div>
@@ -213,6 +213,9 @@ export default {
   padding: 16px 6px;
   border-radius: var(--rocf-card-radius);
   font-weight: 600;
+  width: 100%;
+  text-align: center;
+  margin-right: 8px;
 }
 .new-label.label-omitted {
   color: white;
@@ -233,11 +236,24 @@ export default {
 .roi-visualization .original img {
   width: 100%;
 }
-
-.q-slider >>> .q-slider__thumb-container{
-  transform: scale(1.5);
-}
 .q-slider {
   width: calc(100% - var(--rocf-card-padding));
 }
+
+.q-slider >>> .q-slider__thumb-container{
+  transform: scale(1.8);
+}
+
+@media (max-width:600px) {
+  .q-slider >>> .q-slider__thumb-container{
+    transform: scale(1.5);
+  }
+}
+/** Check this better */
+/* @media (min-width: 600px) {
+  .content > .roi-visualization {
+    display: flex;
+    flex-direction:row;
+  }
+} */
 </style>
