@@ -1,5 +1,5 @@
 <template>
-  <button :class="['rocf-button', `variant-${variant}`, {'display-block': block }, `size-${size}` ]">
+  <button :class="['rocf-button', `variant-${variant}`, {'display-block': block }, `size-${size}` ]" :disabled="disabled">
     <q-icon v-if="iconPosition == 'left'" :name="icon"></q-icon>
     <span><slot></slot></span>
     <q-icon v-if="iconPosition == 'right'" :name="icon"></q-icon>
@@ -28,6 +28,10 @@ export default {
       type: String,
       default: 'large',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    }
   }
 }
 </script>

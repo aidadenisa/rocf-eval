@@ -4,6 +4,9 @@
     
     <div class="threshold-image">
       <img :src="imageSrc">
+      <div v-if="thresholdLoading" class="image-loading">
+        <p>{{loadingThreshTxt}}</p>
+      </div>
     </div>
 
     <div class="flex row justify-between">
@@ -19,6 +22,7 @@
       label
       label-always
       color="primary"
+      :disable="thresholdLoading"
     ></q-slider>
 
     <div class="flex row justify-between">
@@ -34,10 +38,11 @@
       label
       label-always
       color="primary"
+      :disable="thresholdLoading"
     ></q-slider>
     
     <div class="take-picture-btn">
-      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="analyseImage">{{analyseTxt}}</rocf-button>
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" :disabled="loading" @click="analyseImage">{{analyseTxt}}</rocf-button>
     </div>
 
   </q-page>
@@ -57,6 +62,8 @@ export default {
       imageSrc: '',
       ATblockSize: 35,
       ATconstant: 10,
+      thresholdLoading: false,
+      loading: false,
     }
   },
   components: {
@@ -69,6 +76,7 @@ export default {
   },
   methods: {
     async getNewThresholdedImage() {
+      this.thresholdLoading = true;
       let data = {};
       const originalGammaImage = this.$store.state.gammaImage;
       if(!originalGammaImage) return;
@@ -80,7 +88,12 @@ export default {
       data.constant = this.ATconstant;
       data.points = this.$store.state.points;
 
-      let result = await api.put("/preprocessing", data);
+      let result = null;
+      result = await api.put("/preprocessing", data).catch( ()=> { 
+        alert(this.errorTxt);
+        this.thresholdLoading = false;
+      });
+      this.thresholdLoading = false;
       const image = result.image.replaceAll("'", "").slice(1);
       return image;
 
@@ -96,6 +109,7 @@ export default {
       this.$store.dispatch('fetchPatientCode', '');
     },
     async analyseImage() {
+      this.loading = true;
       let data = {};
       const originalImage = this.$store.state.image;
       const index = originalImage.indexOf('data:image/png;base64,');
@@ -110,8 +124,11 @@ export default {
       data.adaptiveThresholdC = this.ATconstant;
       data.adaptiveThresholdBS = this.ATblockSize;
 
-      let result = await api.put('/prediction', data);
-      // alert(result)
+      let result = await api.put('/prediction', data).catch(()=> {
+        alert(this.errorTxt);
+        this.loading = false;
+      });
+      this.loading = false;
       this.info = result;
       localStorage.setItem('evaluationInProgressId', result._id);
       this.resetStorage();
@@ -143,6 +160,12 @@ export default {
     analyseTxt() {
       return this.$t('threshold_analyseBtn');
     },
+    loadingThreshTxt() {
+      return this.$t('threshold_loadingThreshold');
+    },
+    errorTxt() {
+      return this.$t('threshold_errorTxt');
+    },
 
   }
 }
@@ -154,6 +177,23 @@ export default {
 .threshold-image img,
 input {
     width: 100%;
+}
+
+.threshold-image {
+  position: relative;
+}
+
+.threshold-image .image-loading {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.threshold-image .image-loading p {
+  font-size: 14px;
+  transform: translateY(50%);
+  color: var(--rocf-primary);
+  opacity: 1;
 }
 
 </style>

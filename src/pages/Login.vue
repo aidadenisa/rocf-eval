@@ -24,7 +24,7 @@
           {{registerLinkTxt}}
         </router-link>
       </div>
-      <rocf-button type="password" class="submit-button" @click="login">{{loginTxt}}</rocf-button>
+      <rocf-button type="password" class="submit-button" :disabled="loading" @click="login">{{loginTxt}}</rocf-button>
 
     </div>
     <div class="language">
@@ -43,6 +43,7 @@ export default {
     return {
       email: '',
       pass: '',
+      loading: false,
 };
   },
   components: {
@@ -56,13 +57,15 @@ export default {
         alert(this.emptyFieldTxt);
         return;
       }
-
+      this.loading = true;
       let result = await api.post('/login', {
         email: this.email,
         password: this.pass,
       }).catch((error)=>{
         alert(this.errorTxt);
+        this.loading = false;
       });
+      this.loading = false;
 
       if(result && result.token) {
         localStorage.setItem('token', result.token);

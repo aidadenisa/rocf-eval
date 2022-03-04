@@ -79,7 +79,7 @@
 
     <div class="save-revision" v-if="revised">
       <q-page-sticky expand position="bottom" class="flex column justify-center">
-        <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="saveRevision">{{saveRevisionTxt}}</rocf-button>
+        <rocf-button :icon="'chevron_right'" :icon-position="'right'" :disabled="loading" @click="saveRevision">{{saveRevisionTxt}}</rocf-button>
       </q-page-sticky>
     </div>
 
@@ -144,6 +144,7 @@ export default {
       zoomROI: [],
       zoomPatternIndex: null,
       changeROI: false,
+      loading: false, 
     };
   },
   methods: {
@@ -203,6 +204,7 @@ export default {
       }
     },
     async saveRevision() {
+      this.loading = true;
       this.rocf["_rocfEvaluationId"] = this.rocf._id;
       this.updateScoresAfterRevision();
       this.updateDiagnosisAfterRevision();
@@ -210,7 +212,9 @@ export default {
       let result = await api.post('/revision', this.rocf ).catch((error) => {
         console.log(error);
         alert(this.errorTxt)
+        this.loading = false;
       });
+      this.loading = false;
       console.log(result);
       alert(this.savedTxt);
       this.revised = false;

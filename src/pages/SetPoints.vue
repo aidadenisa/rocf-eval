@@ -34,7 +34,7 @@
     </q-dialog>
 
     <div class="save-points-btn">
-      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="savePoints">{{extractTxt}}</rocf-button>
+      <rocf-button :icon="'chevron_right'" :icon-position="'right'" @click="savePoints" :disabled="loading">{{extractTxt}}</rocf-button>
     </div>
 
   </q-page>
@@ -75,7 +75,8 @@ export default {
       radius: 20,
       points: [],
       result: '',
-      showImageDialog: false
+      showImageDialog: false,
+      loading: false,
     }
   },
   beforeMount() {
@@ -293,6 +294,7 @@ export default {
     async getHomography() {
         //send the image for preprocessing
 
+        this.loading = true;
         this.info="this got called"
         let data = {};
         data.points = [];
@@ -306,7 +308,11 @@ export default {
                         : this.imageSrc;
         data.gamma = 0.7;
         
-        let response = await api.post('/preprocessing', data )
+        let response = await api.post('/preprocessing', data ).catch(() => {
+            alert(this.errorTxt)
+            this.loading=false;
+        });
+        this.loading = false;
         const image = response.image.replaceAll("'", "").slice(1);
         this.result = `data:image/png;base64,${image}`;
 
@@ -346,6 +352,9 @@ export default {
     },
     manyPointsTxt() {
         return this.$t('setPoints_manyPoints');
+    },
+    errorTxt() {
+        return this.$t('setPoints_errorPreprocessing');
     },
   }
 }

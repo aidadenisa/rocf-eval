@@ -57,6 +57,7 @@ export default {
   setPoints_fewPoints1: 'There are only',
   setPoints_fewPoints2: 'points set. You should set 5 points!',
   setPoints_manyPoints: "You should set only 5 points!",
+  setPoints_errorPreprocessing: "There has been an error processing this request. Please try again!",
 
   //Threshold Page
   threshold_subtitle: 'New ROCF Evaluation',
@@ -67,6 +68,8 @@ export default {
   threshold_darker: 'Darker',
   threshold_lighter: 'Lighter',
   threshold_analyseBtn: 'Analyse the drawing',
+  threshold_loadingThreshold: "Loading...",
+  threshold_errorTxt: "There has been an error processing this request. Please try again!",
 
   //ROCF Result Page
   rocfResult_title: 'ROCF Patterns evaluation',

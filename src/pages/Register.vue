@@ -33,7 +33,7 @@
         </router-link>
       </div>
 
-      <rocf-button class="submit-button" @click="registerNewAccount">{{registerTxt}}</rocf-button>
+      <rocf-button class="submit-button" :disabled="loading" @click="registerNewAccount">{{registerTxt}}</rocf-button>
 
     </div>
     <div class="language">
@@ -54,6 +54,7 @@ export default {
       name: '',
       pass1: '',
       pass2: '',
+      loading: false,
     };
   },
   components: {
@@ -66,7 +67,6 @@ export default {
         alert(this.passMismatchTxt);
         this.pass1 = '';
         this.pass2 = '';
-        
         return;
       }
 
@@ -75,13 +75,19 @@ export default {
         return;
       }
 
+      this.loading = true;
       let result = await api.post('/register', {
         email: this.email,
         name: this.name,
         password: this.pass1,
       }).catch(()=>{
         alert(this.errorTxt);
+        this.loading = false;
       });
+      if (result.error) {
+        alert(result.error);
+      } 
+      this.loading = false;
 
       if(result && result.token) {
         localStorage.setItem('token', result.token);
