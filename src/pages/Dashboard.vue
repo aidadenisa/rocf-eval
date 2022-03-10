@@ -8,12 +8,15 @@
       <new-rocf></new-rocf>
     </router-link>
 
-    <!--Add here search bar-->
+    <div class="search-bar flex row ">
+      <q-icon name="search" class="search-icon"></q-icon>
+      <input v-model="search">
+    </div>
 
     <div class="rocf-evaluations">
       <h3> {{previousRocfTxt}} </h3>
 
-      <rocf-list v-if="rocfs.length" :rocfs="rocfs"></rocf-list>
+      <rocf-list v-if="filteredROCF.length" :rocfs="filteredROCF"></rocf-list>
       <div v-else class="empty-list-rocfs">
         <br>
         <h3>{{noRocfTxt}}</h3>
@@ -35,6 +38,7 @@ export default {
       info: '',
       rocfs: [],
       user: null,
+      search: ''
     };
   },
   components: {
@@ -78,6 +82,11 @@ export default {
     this.checkIfEvaluationInProgress();
   },
   computed: {
+    filteredROCF() {
+      return this.rocfs.filter(rocf => {
+        return rocf.patientCode.toLowerCase().includes(this.search.toLowerCase())
+      })
+    },
     greetingTxt() {
       return this.$t('dashboard_greeting');
     },
@@ -118,8 +127,8 @@ export default {
   font-weight: 600;
 }
 
-.rocf-evaluations {
-  margin-top: calc(2 * var(--rocf-content-margin-y));
+.rocf-evaluations, .search-bar {
+  margin-top: calc(1.5 * var(--rocf-content-margin-y));
 }
 .rocf-evaluations h3 {
   font-weight: 600;
@@ -128,5 +137,23 @@ export default {
 
 .empty-list-rocfs h3 {
   color: #adadad;
+}
+.search-bar {
+  position: relative;
+  color: var(--rocf-primary);
+}
+.search-bar input{
+  width: 100%;
+  border: none;
+  padding: 12px;
+  font-size: 18px;
+  padding-left: calc( 2 * 12px + 28px);
+  box-shadow: var(--rocf-card-shadow);
+  color: var(--rocf-primary);
+}
+.search-bar .search-icon {
+  position: absolute;
+  font-size: 28px;
+  padding: 12px;
 }
 </style>
