@@ -112,6 +112,12 @@ export default {
                 width: this.baseImage.width,
                 height: this.baseImage.height
             }
+            console.log("image dimensions", this.baseImage.width, this.baseImage.height )
+
+            if(this.baseImage.height / this.canvas.height < 1) {
+                this.zoom = this.canvas.height / this.baseImage.height ;
+                console.log( "this is the zoom", this.zoom )
+            }
             this.drawImage();
         }
     },
@@ -156,9 +162,9 @@ export default {
             this.handleDrag(event);
         };
 
-        if(event.touches.length == 2 && this.zooming) {
-            this.handleZoom(event);
-        } 
+        // if(event.touches.length == 2 && this.zooming) {
+        //     this.handleZoom(event);
+        // } 
         this.drawImage();        
     },
     touchEndHandler(event) {
@@ -178,13 +184,13 @@ export default {
 
         //if current position if outside of bounds, set it to the bounds
         this.currentPointInOrigin.x = this.currentPointInOrigin.x > 0 ? 0 : this.currentPointInOrigin.x;
-        this.currentPointInOrigin.x = (- this.currentPointInOrigin.x) + this.canvas.width > this.dimensions.width 
-                                        ? - (this.dimensions.width - this.canvas.width) 
+        this.currentPointInOrigin.x = (- this.currentPointInOrigin.x) + this.canvas.width > this.dimensions.width * this.zoom
+                                        ? - (this.dimensions.width * this.zoom - this.canvas.width) 
                                         : this.currentPointInOrigin.x;
 
         this.currentPointInOrigin.y = this.currentPointInOrigin.y > 0 ? 0 : this.currentPointInOrigin.y;
-        this.currentPointInOrigin.y = (- this.currentPointInOrigin.y) +  this.canvas.height > this.dimensions.height 
-                                        ?  - ( this.dimensions.height - this.canvas.height) 
+        this.currentPointInOrigin.y = (- this.currentPointInOrigin.y) +  this.canvas.height > this.dimensions.height * this.zoom
+                                        ?  - ( this.dimensions.height * this.zoom - this.canvas.height) 
                                         : this.currentPointInOrigin.y;
         this.info = [(- this.currentPointInOrigin.x), (- this.currentPointInOrigin.y) ] ;
 
@@ -258,7 +264,7 @@ export default {
     },
     drawImage() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y, this.dimensions.width, this.dimensions.height);
+        this.context.drawImage(this.baseImage, this.currentPointInOrigin.x, this.currentPointInOrigin.y, this.dimensions.width * this.zoom, this.dimensions.height * this.zoom);
 
         this.drawPoints();
     },
