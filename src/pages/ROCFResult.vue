@@ -15,13 +15,14 @@
         </div>
         <div v-if="rocf.diagnosis">
           <div v-if="!changeDiagnosis">
-            <div v-if="rocf.diagnosis.doctorOverridden" class="diagnosis-overridden">
-              <div class="card-title"> {{diagnosisTxt}} </div>
+            <div class="diagnosis-overridden">
+              <div class="card-title" v-if="rocf.diagnosis.doctorOverridden"> {{diagnosisTxt}} </div>
+              <div class="card-title" v-else> {{predictionTxt}} </div>
               <div class="diagnosis-card" :class="rocf.diagnosis.labelText">
                 {{label(rocf.diagnosis.labelNumber)}}
               </div>
             </div>
-            <div v-else class="system-prediction diagnosis-box flex column items-center">
+            <!-- <div v-else class="system-prediction diagnosis-box flex column items-center">
               <div class="card-title"> {{predictionTxt}} </div>
               <table class="chart">
                 <tr 
@@ -39,7 +40,7 @@
                   <td class="probability"> {{parseFloat(prob.toString()).toFixed(2)}} </td>
                 </tr>
               </table>
-            </div>
+            </div> -->
             <div class="button-bar">
               <rocf-button :icon="'edit'" :icon-position="'left'" variant="secondary" :block="true" size="small" @click="changeDiagnosis = true">
                 {{changeDiagnosisTxt}}
@@ -241,17 +242,6 @@ export default {
     setWidthFromProbability(prob) {
       let progress = parseFloat(prob).toFixed(2) * 100;
       return progress + '%';
-    },
-    getProbabilitiesForChosenLabel(chosenDiagnosis) {
-      let probabilities = [];
-      for(let i=0; i<3; i++) {
-        if(this.getNumberFromLabel(chosenDiagnosis) == i) {
-          probabilities.push(1.0);
-        } else {
-          probabilities.push(0.0);
-        }
-      }
-      return probabilities;
     },
     chooseDiagnosis(label) {
       this.revised = true;
