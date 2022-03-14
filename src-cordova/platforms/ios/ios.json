@@ -10,7 +10,7 @@
           "NSCameraUsageDescription": [
             {
               "xml": "<string>Allow the app to use your camera</string>",
-              "count": 229
+              "count": 230
             }
           ]
         }
